@@ -1,42 +1,35 @@
 "use client";
 
-import { useAuth } from "./contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Activity } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import LoginForm from "./components/LoginForm";
 
-export default function Home() {
-  const { user, loading } = useAuth();
+export default function HomePage() {
   const router = useRouter();
 
-  useEffect(() => {
-    if (!loading && user) {
-      router.push("/dashboard");
-    }
-  }, [user, loading, router]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+  const handleLogin = () => {
+    router.push("/login");
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="max-w-md w-full space-y-8 p-8">
-          <div className="text-center">
-            <h1 className="text-4xl font-bold text-gray-900 mb-2">
-              Medical CV System
-            </h1>
-            <p className="text-gray-600">
-              Comprehensive medical record management
-            </p>
-          </div>
-          <LoginForm />
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="text-center space-y-8">
+        <div className="flex items-center justify-center space-x-3">
+          <Activity className="h-12 w-12 text-primary" />
+          <h1 className="text-4xl font-bold text-foreground">MedicalCV</h1>
         </div>
+
+        <p className="text-lg text-muted-foreground max-w-md mx-auto">
+          Professional medical CV management system
+        </p>
+
+        <Button
+          size="lg"
+          onClick={handleLogin}
+          className="px-8 bg-blue-600 hover:bg-blue-700 text-white"
+        >
+          Login
+        </Button>
       </div>
     </div>
   );
