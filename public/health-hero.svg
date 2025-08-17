@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800px" height="600px" viewBox="0 0 800 600" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M400,100 C550,100 670,220 670,370 C670,520 550,640 400,640 C250,640 130,520 130,370 C130,220 250,100 400,100" fill="#9ebdb3"/>
+        <path d="M400,200 L400,540 M230,370 L570,370" stroke="#00368c" stroke-width="40" stroke-linecap="round"/>
+    </g>
+</svg>

@@ -38,8 +38,8 @@ export default function DangerConfirmModal({
   const isConfirmValid = confirmText.toLowerCase() === "confirm";
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-6 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-white">
+    <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+      <div className="relative top-20 mx-auto p-6 border w-11/12 md:w-1/2 lg:w-1/3 shadow-lg rounded-md bg-card">
         <div className="flex items-center mb-4">
           <div className="flex-shrink-0">
             <svg
@@ -57,16 +57,16 @@ export default function DangerConfirmModal({
             </svg>
           </div>
           <div className="ml-3">
-            <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+            <h3 className="text-lg font-medium text-foreground">{title}</h3>
           </div>
         </div>
 
         <div className="mb-4">
-          <p className="text-sm text-gray-600 mb-2">{message}</p>
-          <p className="text-sm font-medium text-gray-900 mb-4">
+          <p className="text-sm text-muted-foreground mb-2">{message}</p>
+          <p className="text-sm font-medium text-foreground mb-4">
             <span className="font-semibold">"{itemName}"</span>
           </p>
-          <p className="text-sm text-gray-600 mb-4">
+          <p className="text-sm text-muted-foreground mb-4">
             This action cannot be undone. Please type{" "}
             <span className="font-semibold text-red-600">confirm</span> to
             proceed.
@@ -77,7 +77,7 @@ export default function DangerConfirmModal({
             value={confirmText}
             onChange={(e) => setConfirmText(e.target.value)}
             placeholder="Type 'confirm' to delete"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+            className="w-full px-3 py-2 border border-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-destructive focus:border-destructive bg-card"
             disabled={isDeleting}
           />
         </div>
@@ -86,14 +86,14 @@ export default function DangerConfirmModal({
           <button
             onClick={handleClose}
             disabled={isDeleting}
-            className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400 disabled:opacity-50"
+            className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80 disabled:opacity-50"
           >
             Cancel
           </button>
           <button
             onClick={handleConfirm}
             disabled={!isConfirmValid || isDeleting}
-            className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-destructive text-white px-4 py-2 rounded-md hover:bg-destructive/90 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isDeleting ? "Deleting..." : "Delete"}
           </button>

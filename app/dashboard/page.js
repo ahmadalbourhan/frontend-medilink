@@ -1,26 +1,31 @@
-"use client"
+"use client";
 
-import { useAuth } from "../contexts/AuthContext"
-import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-import DashboardLayout from "../components/DashboardLayout"
-import { mockPatients, mockDoctors, mockMedicalRecords, mockInstitutions } from "../lib/mockData"
+import { useAuth } from "../contexts/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import DashboardLayout from "../components/DashboardLayout";
+import {
+  mockPatients,
+  mockDoctors,
+  mockMedicalRecords,
+  mockInstitutions,
+} from "../lib/mockData";
 
 export default function Dashboard() {
-  const { user, loading } = useAuth()
-  const router = useRouter()
+  const { user, loading } = useAuth();
+  const router = useRouter();
   const [stats, setStats] = useState({
     totalPatients: 0,
     totalDoctors: 0,
     totalRecords: 0,
     totalInstitutions: 0,
-  })
+  });
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push("/")
+      router.push("/");
     }
-  }, [user, loading, router])
+  }, [user, loading, router]);
 
   useEffect(() => {
     // Calculate stats from mock data
@@ -29,28 +34,30 @@ export default function Dashboard() {
       totalDoctors: mockDoctors.length,
       totalRecords: mockMedicalRecords.length,
       totalInstitutions: mockInstitutions.length,
-    })
-  }, [])
+    });
+  }, []);
 
   if (loading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
       </div>
-    )
+    );
   }
 
   const StatCard = ({ title, value, icon, color }) => (
-    <div className="bg-white rounded-lg shadow p-6">
+    <div className="bg-card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
       <div className="flex items-center">
-        <div className={`p-3 rounded-full ${color} text-white mr-4`}>{icon}</div>
+        <div className={`p-3 rounded-full ${color} text-white mr-4`}>
+          {icon}
+        </div>
         <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-semibold text-gray-900">{value}</p>
+          <p className="text-sm font-medium text-muted-foreground">{title}</p>
+          <p className="text-2xl font-semibold text-foreground">{value}</p>
         </div>
       </div>
     </div>
-  )
+  );
 
   return (
     <DashboardLayout>
@@ -105,30 +112,50 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Patients</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-4">
+              Recent Patients
+            </h3>
             <div className="space-y-3">
               {mockPatients.slice(0, 5).map((patient) => (
-                <div key={patient.patientId} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                <div
+                  key={patient.patientId}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded"
+                >
                   <div>
                     <p className="font-medium text-gray-900">{patient.name}</p>
-                    <p className="text-sm text-gray-600">ID: {patient.patientId}</p>
+                    <p className="text-sm text-gray-600">
+                      ID: {patient.patientId}
+                    </p>
                   </div>
-                  <span className="text-sm text-gray-500">{patient.bloodType}</span>
+                  <span className="text-sm text-gray-500">
+                    {patient.bloodType}
+                  </span>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">Recent Records</h3>
+            <h3 className="text-lg font-medium text-gray-900 mb-4">
+              Recent Records
+            </h3>
             <div className="space-y-3">
               {mockMedicalRecords.slice(0, 5).map((record) => (
-                <div key={record._id} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                <div
+                  key={record._id}
+                  className="flex items-center justify-between p-3 bg-gray-50 rounded"
+                >
                   <div>
-                    <p className="font-medium text-gray-900">{record.visitInfo.type}</p>
-                    <p className="text-sm text-gray-600">Patient: {record.patientId}</p>
+                    <p className="font-medium text-gray-900">
+                      {record.visitInfo.type}
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Patient: {record.patientId}
+                    </p>
                   </div>
-                  <span className="text-sm text-gray-500">{new Date(record.visitInfo.date).toLocaleDateString()}</span>
+                  <span className="text-sm text-gray-500">
+                    {new Date(record.visitInfo.date).toLocaleDateString()}
+                  </span>
                 </div>
               ))}
             </div>
@@ -136,5 +163,5 @@ export default function Dashboard() {
         </div>
       </div>
     </DashboardLayout>
-  )
+  );
 }
