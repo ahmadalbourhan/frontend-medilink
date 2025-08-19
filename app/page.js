@@ -68,7 +68,7 @@ export default function HomePage() {
                   <Button
                     size="lg"
                     onClick={handleLogin}
-                    className="bg-primary hover:bg-accent transition-all duration-300 text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl"
+                    className="bg-primary hover:bg-accent transition-all duration-300 text-black hover:text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl"
                   >
                     Get Started
                   </Button>
