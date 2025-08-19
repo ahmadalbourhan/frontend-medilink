@@ -66,10 +66,8 @@ export default function Institutions() {
   if (user.role !== "admin") {
     return (
       <DashboardLayout>
-        <div className="text-center py-12">
-          <p className="text-gray-500">
-            Access denied. Only admin users can manage institutions.
-          </p>
+        <div className="text-center py-12 text-muted-foreground">
+          <p>Access denied. Only admin users can manage institutions.</p>
         </div>
       </DashboardLayout>
     );
@@ -77,8 +75,8 @@ export default function Institutions() {
 
   const getTypeColor = (type) => {
     return type === "hospital"
-      ? "bg-blue-100 text-blue-800"
-      : "bg-green-100 text-green-800";
+      ? "bg-primary/10 text-primary"
+      : "bg-secondary/50 text-secondary-foreground";
   };
 
   const handleView = (institution) => {
@@ -108,6 +106,8 @@ export default function Institutions() {
     const institutionWithId = {
       ...newInstitution,
       _id: Date.now().toString(),
+      password: newInstitution.password,
+      role: newInstitution.role || "admin_institutions",
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
@@ -135,21 +135,23 @@ export default function Institutions() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">
+            <h1 className="text-2xl font-semibold text-foreground">
               Institutions
             </h1>
-            <p className="text-gray-600">Manage healthcare institutions</p>
+            <p className="text-muted-foreground">
+              Manage healthcare institutions
+            </p>
           </div>
           <button
             onClick={handleCreate}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
           >
             Add New Institution
           </button>
         </div>
 
-        <div className="bg-white shadow rounded-lg">
-          <div className="p-6 border-b border-gray-200">
+        <div className="bg-card shadow rounded-lg text-card-foreground">
+          <div className="p-6 border-b border-border">
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
               <div className="flex-1 w-full">
                 <input
@@ -157,14 +159,14 @@ export default function Institutions() {
                   placeholder="Search institutions by name, address, or email..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 />
               </div>
               <div>
                 <select
                   value={typeFilter}
                   onChange={(e) => setTypeFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 >
                   <option value="all">All Types</option>
                   <option value="hospital">Hospital</option>
@@ -175,36 +177,35 @@ export default function Institutions() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-border">
+              <thead className="bg-muted">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Institution
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Type
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Contact
                   </th>
-                  {/* 
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Services
-                  </th> */}
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-card divide-y divide-border">
                 {filteredInstitutions.map((institution) => (
-                  <tr key={institution._id} className="hover:bg-gray-50">
+                  <tr key={institution._id} className="hover:bg-accent/10">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-foreground">
                           {institution.name}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-muted-foreground">
                           {institution.contact.address}
                         </div>
                       </div>
@@ -218,34 +219,34 @@ export default function Institutions() {
                         {institution.type}
                       </span>
                     </td>
-                    {/* 
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                       <div>{institution.contact.phone}</div>
-                      <div className="text-gray-500">{institution.contact.email}</div>
+                      <div className="text-muted-foreground">
+                        {institution.contact.email}
+                      </div>
                     </td>
-                    */}
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                       <div className="max-w-xs">
                         {institution.services.slice(0, 3).join(", ")}
-                        {/* {institution.services.length > 3 && "..."} */}
+                        {institution.services.length > 3 && "..."}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
                         onClick={() => handleView(institution)}
-                        className="text-blue-600 hover:text-blue-900 mr-4"
+                        className="text-primary hover:text-primary/80 mr-4"
                       >
                         View
                       </button>
                       <button
                         onClick={() => handleEdit(institution)}
-                        className="text-indigo-600 hover:text-indigo-900 mr-4"
+                        className="text-accent hover:text-accent/80 mr-4"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(institution)}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-destructive hover:text-destructive/80"
                       >
                         Delete
                       </button>
@@ -257,10 +258,8 @@ export default function Institutions() {
           </div>
 
           {filteredInstitutions.length === 0 && (
-            <div className="text-center py-12">
-              <p className="text-gray-500">
-                No institutions found matching your criteria.
-              </p>
+            <div className="text-center py-12 text-muted-foreground">
+              <p>No institutions found matching your criteria.</p>
             </div>
           )}
         </div>
@@ -302,15 +301,15 @@ export default function Institutions() {
 
 function ViewInstitutionModal({ institution, onClose }) {
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+    <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+      <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-lg font-medium text-foreground">
             Institution Details
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-muted-foreground hover:text-foreground"
           >
             <svg
               className="w-6 h-6"
@@ -331,49 +330,57 @@ function ViewInstitutionModal({ institution, onClose }) {
         <div className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Name
               </label>
-              <p className="mt-1 text-sm text-gray-900">{institution.name}</p>
+              <p className="mt-1 text-sm text-foreground">{institution.name}</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Type
               </label>
-              <p className="mt-1 text-sm text-gray-900 capitalize">
+              <p className="mt-1 text-sm text-foreground capitalize">
                 {institution.type}
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Phone
               </label>
-              <p className="mt-1 text-sm text-gray-900">
+              <p className="mt-1 text-sm text-foreground">
                 {institution.contact.phone}
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Email
               </label>
-              <p className="mt-1 text-sm text-gray-900">
+              <p className="mt-1 text-sm text-foreground">
                 {institution.contact.email}
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground">
+                Role
+              </label>
+              <p className="mt-1 text-sm text-foreground capitalize">
+                {institution.role}
               </p>
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Address
             </label>
-            <p className="mt-1 text-sm text-gray-900">
+            <p className="mt-1 text-sm text-foreground">
               {institution.contact.address}
             </p>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Services
             </label>
-            <p className="mt-1 text-sm text-gray-900">
+            <p className="mt-1 text-sm text-foreground">
               {institution.services.join(", ")}
             </p>
           </div>
@@ -382,7 +389,7 @@ function ViewInstitutionModal({ institution, onClose }) {
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
+            className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
           >
             Close
           </button>
@@ -400,6 +407,7 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
     email: institution.contact.email,
     address: institution.contact.address,
     services: institution.services.join(", "),
+    role: institution.role,
   });
 
   const handleSubmit = (e) => {
@@ -417,6 +425,7 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
         .split(",")
         .map((s) => s.trim())
         .filter((s) => s),
+      role: formData.role,
     };
     onSave(updatedInstitution);
   };
@@ -426,15 +435,15 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+    <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+      <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-lg font-medium text-foreground">
             Edit Institution
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-muted-foreground hover:text-foreground"
           >
             <svg
               className="w-6 h-6"
@@ -455,7 +464,7 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Name
               </label>
               <input
@@ -463,19 +472,19 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Type
               </label>
               <select
                 name="type"
                 value={formData.type}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               >
                 <option value="hospital">Hospital</option>
@@ -483,7 +492,7 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Phone
               </label>
               <input
@@ -491,12 +500,12 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
                 name="phone"
                 value={formData.phone}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Email
               </label>
               <input
@@ -504,13 +513,28 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               />
             </div>
+            <div>
+              <label className="block text-sm font-medium text-muted-foreground">
+                Role
+              </label>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleChange}
+                className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
+                required
+              >
+                <option value="admin">System Admin</option>
+                <option value="admin_institutions">Institution Admin</option>
+              </select>
+            </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Address
             </label>
             <textarea
@@ -518,12 +542,12 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
               value={formData.address}
               onChange={handleChange}
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Services (comma-separated)
             </label>
             <textarea
@@ -531,7 +555,7 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
               value={formData.services}
               onChange={handleChange}
               rows={2}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder="Emergency Care, Surgery, Cardiology"
               required
             />
@@ -541,13 +565,13 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
+              className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
             >
               Save Changes
             </button>
@@ -566,9 +590,8 @@ function CreateInstitutionModal({ onClose, onSave }) {
     email: "",
     address: "",
     services: "",
-    adminEmail: "",
-    adminPassword: "",
-    adminName: "",
+    password: "",
+    role: "admin_institutions",
   });
 
   const handleSubmit = (e) => {
@@ -585,11 +608,8 @@ function CreateInstitutionModal({ onClose, onSave }) {
         .split(",")
         .map((s) => s.trim())
         .filter((s) => s),
-      adminCredentials: {
-        email: formData.adminEmail,
-        password: formData.adminPassword,
-        name: formData.adminName,
-      },
+      password: formData.password,
+      role: formData.role,
     };
     onSave(newInstitution);
   };
@@ -599,15 +619,15 @@ function CreateInstitutionModal({ onClose, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-white">
+    <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+      <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-lg font-medium text-foreground">
             Create New Institution
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-muted-foreground hover:text-foreground"
           >
             <svg
               className="w-6 h-6"
@@ -628,12 +648,12 @@ function CreateInstitutionModal({ onClose, onSave }) {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Institution Details */}
           <div>
-            <h4 className="text-md font-medium text-gray-900 mb-3">
+            <h4 className="text-md font-medium text-foreground mb-3">
               Institution Details
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Institution Name
                 </label>
                 <input
@@ -641,19 +661,19 @@ function CreateInstitutionModal({ onClose, onSave }) {
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Type
                 </label>
                 <select
                   name="type"
                   value={formData.type}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
                 >
                   <option value="hospital">Hospital</option>
@@ -661,7 +681,7 @@ function CreateInstitutionModal({ onClose, onSave }) {
                 </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Phone
                 </label>
                 <input
@@ -669,12 +689,12 @@ function CreateInstitutionModal({ onClose, onSave }) {
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-muted-foreground">
                   Email
                 </label>
                 <input
@@ -682,13 +702,13 @@ function CreateInstitutionModal({ onClose, onSave }) {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
                 />
               </div>
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Address
               </label>
               <textarea
@@ -696,12 +716,12 @@ function CreateInstitutionModal({ onClose, onSave }) {
                 value={formData.address}
                 onChange={handleChange}
                 rows={3}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               />
             </div>
             <div className="mt-4">
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Services (comma-separated)
               </label>
               <textarea
@@ -709,62 +729,50 @@ function CreateInstitutionModal({ onClose, onSave }) {
                 value={formData.services}
                 onChange={handleChange}
                 rows={2}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="Emergency Care, Surgery, Cardiology"
                 required
               />
             </div>
           </div>
 
-          {/* Admin Credentials */}
           <div className="border-t pt-6">
-            <h4 className="text-md font-medium text-gray-900 mb-3">
-              Institution Admin Credentials
+            <h4 className="text-md font-medium text-foreground mb-3">
+              Institution Login Credentials
             </h4>
-            <p className="text-sm text-gray-600 mb-4">
-              Create login credentials for the institution administrator
+            <p className="text-sm text-muted-foreground mb-4">
+              Set up login credentials for this institution
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Admin Name
+                <label className="block text-sm font-medium text-muted-foreground">
+                  Role
                 </label>
-                <input
-                  type="text"
-                  name="adminName"
-                  value={formData.adminName}
+                <select
+                  name="role"
+                  value={formData.role}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
-                />
+                >
+                  <option value="admin">System Admin</option>
+                  <option value="admin_institutions">Institution Admin</option>
+                </select>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Admin Email
-                </label>
-                <input
-                  type="email"
-                  name="adminEmail"
-                  value={formData.adminEmail}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  required
-                />
-              </div>
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700">
-                  Admin Password
+                <label className="block text-sm font-medium text-muted-foreground">
+                  Password
                 </label>
                 <input
                   type="password"
-                  name="adminPassword"
-                  value={formData.adminPassword}
+                  name="password"
+                  value={formData.password}
                   onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                   minLength={6}
                   required
                 />
-                <p className="mt-1 text-sm text-gray-500">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Minimum 6 characters
                 </p>
               </div>
@@ -775,13 +783,13 @@ function CreateInstitutionModal({ onClose, onSave }) {
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
+              className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
             >
               Create Institution
             </button>

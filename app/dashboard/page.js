@@ -40,15 +40,17 @@ export default function Dashboard() {
   if (loading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
       </div>
     );
   }
 
   const StatCard = ({ title, value, icon, color }) => (
-    <div className="bg-card rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+    <div className="bg-card rounded-lg shadow p-6 text-card-foreground">
       <div className="flex items-center">
-        <div className={`p-3 rounded-full ${color} text-white mr-4`}>
+        <div
+          className={`p-3 rounded-full ${color} text-primary-foreground mr-4`}
+        >
           {icon}
         </div>
         <div>
@@ -63,8 +65,8 @@ export default function Dashboard() {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Welcome back, {user.name}</p>
+          <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
+          <p className="text-muted-foreground">Welcome back, {user.name}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -111,23 +113,25 @@ export default function Dashboard() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+          <div className="bg-card rounded-lg shadow p-6 text-card-foreground">
+            <h3 className="text-lg font-medium text-foreground mb-4">
               Recent Patients
             </h3>
             <div className="space-y-3">
               {mockPatients.slice(0, 5).map((patient) => (
                 <div
                   key={patient.patientId}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded"
+                  className="flex items-center justify-between p-3 bg-muted rounded"
                 >
                   <div>
-                    <p className="font-medium text-gray-900">{patient.name}</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="font-medium text-foreground">
+                      {patient.name}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
                       ID: {patient.patientId}
                     </p>
                   </div>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-muted-foreground">
                     {patient.bloodType}
                   </span>
                 </div>
@@ -135,25 +139,25 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+          <div className="bg-card rounded-lg shadow p-6 text-card-foreground">
+            <h3 className="text-lg font-medium text-foreground mb-4">
               Recent Records
             </h3>
             <div className="space-y-3">
               {mockMedicalRecords.slice(0, 5).map((record) => (
                 <div
                   key={record._id}
-                  className="flex items-center justify-between p-3 bg-gray-50 rounded"
+                  className="flex items-center justify-between p-3 bg-muted rounded"
                 >
                   <div>
-                    <p className="font-medium text-gray-900">
+                    <p className="font-medium text-foreground">
                       {record.visitInfo.type}
                     </p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                       Patient: {record.patientId}
                     </p>
                   </div>
-                  <span className="text-sm text-gray-500">
+                  <span className="text-sm text-muted-foreground">
                     {new Date(record.visitInfo.date).toLocaleDateString()}
                   </span>
                 </div>

@@ -1,42 +1,21 @@
 // Mock data that matches your Express backend structure
 
-export const mockUsers = [
-  {
-    _id: "admin001",
-    name: "System Administrator",
-    email: "admin@medicalcv.com",
-    password: "admin", // In real app, this would be hashed
-    role: "admin",
-    permissions: [
-      "manage_patients",
-      "manage_doctors",
-      "manage_medical_records",
-      "manage_users",
-      "view_statistics",
-      "manage_institutions",
-      "manage_roles",
-      "cross_institution_access",
-      "emergency_override",
-    ],
-  },
-  {
-    _id: "inst001",
-    name: "Dr. Sarah Johnson",
-    email: "sarah@cityhospital.com",
-    password: "password123",
-    role: "admin_institutions",
-    institutionId: "inst_001",
-    permissions: [
-      "manage_patients",
-      "manage_doctors",
-      "manage_medical_records",
-      "view_statistics",
-      "cross_institution_access",
-    ],
-  },
-]
-
 export const mockInstitutions = [
+  {
+    _id: "inst_admin",
+    name: "System Administration",
+    type: "hospital", // could just be placeholder
+    contact: {
+      address: "System",
+      phone: "System",
+      email: "admin@medicalcv.com",
+    },
+    password: "admin", // ⚠️ plain for mock; hash in DB
+    role: "admin",
+    services: [],
+    createdAt: "2024-01-01T00:00:00Z",
+    updatedAt: "2024-01-01T00:00:00Z",
+  },
   {
     _id: "inst_001",
     name: "City General Hospital",
@@ -46,7 +25,15 @@ export const mockInstitutions = [
       phone: "+1-555-0123",
       email: "info@cityhospital.com",
     },
-    services: ["Emergency Care", "Surgery", "Cardiology", "Pediatrics", "Radiology"],
+    password: "password123",
+    role: "admin_institutions",
+    services: [
+      "Emergency Care",
+      "Surgery",
+      "Cardiology",
+      "Pediatrics",
+      "Radiology",
+    ],
     createdAt: "2024-01-15T08:00:00Z",
     updatedAt: "2024-01-15T08:00:00Z",
   },
@@ -59,7 +46,14 @@ export const mockInstitutions = [
       phone: "+1-555-0456",
       email: "contact@westsideclinic.com",
     },
-    services: ["General Practice", "Immunizations", "Lab Tests", "Physical Therapy"],
+    password: "password123",
+    role: "admin_institutions",
+    services: [
+      "General Practice",
+      "Immunizations",
+      "Lab Tests",
+      "Physical Therapy",
+    ],
     createdAt: "2024-01-20T09:00:00Z",
     updatedAt: "2024-01-20T09:00:00Z",
   },
@@ -72,11 +66,13 @@ export const mockInstitutions = [
       phone: "+1-555-0789",
       email: "info@childrenshc.com",
     },
+    password: "password123",
+    role: "admin_institutions",
     services: ["Pediatrics", "NICU", "Pediatric Surgery", "Child Psychology"],
     createdAt: "2024-02-01T10:00:00Z",
     updatedAt: "2024-02-01T10:00:00Z",
   },
-]
+];
 
 export const mockPatients = [
   {
@@ -191,7 +187,7 @@ export const mockPatients = [
     createdAt: "2024-02-05T16:20:00Z",
     updatedAt: "2024-02-05T16:20:00Z",
   },
-]
+];
 
 export const mockDoctors = [
   {
@@ -254,7 +250,7 @@ export const mockDoctors = [
     createdAt: "2024-01-22T11:10:00Z",
     updatedAt: "2024-01-22T11:10:00Z",
   },
-]
+];
 
 export const mockMedicalRecords = [
   {
@@ -382,7 +378,8 @@ export const mockMedicalRecords = [
       symptoms: "Follow-up for hypertension management",
       diagnosis: "Hypertension, well controlled",
       treatment: "Continue current medication regimen",
-      notes: "Blood pressure readings improved, patient compliant with medication",
+      notes:
+        "Blood pressure readings improved, patient compliant with medication",
     },
     prescriptions: [
       {
@@ -492,4 +489,4 @@ export const mockMedicalRecords = [
     createdAt: "2024-02-25T08:00:00Z",
     updatedAt: "2024-02-25T08:00:00Z",
   },
-]
+];

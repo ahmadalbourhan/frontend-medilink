@@ -151,23 +151,23 @@ export default function MedicalRecords() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">
+            <h1 className="text-2xl font-semibold text-foreground">
               Medical Records
             </h1>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               View and manage patient medical records
             </p>
           </div>
           <button
             onClick={handleCreate}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
           >
             Add New Record
           </button>
         </div>
 
-        <div className="bg-white shadow rounded-lg">
-          <div className="p-6 border-b border-gray-200">
+        <div className="bg-card text-card-foreground shadow rounded-lg">
+          <div className="p-6 border-b border-border">
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
               <div className="flex-1 w-full">
                 <input
@@ -175,14 +175,14 @@ export default function MedicalRecords() {
                   placeholder="Search by patient name, ID, doctor, or diagnosis..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 />
               </div>
               <div>
                 <select
                   value={filterType}
                   onChange={(e) => setFilterType(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 >
                   <option value="all">All Types</option>
                   <option value="consultation">Consultation</option>
@@ -197,43 +197,43 @@ export default function MedicalRecords() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-border">
+              <thead className="bg-muted">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Patient
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Doctor
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Visit Type
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Date
                   </th>
                   {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Diagnosis
                   </th> */}
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-card divide-y divide-border">
                 {filteredRecords.map((record) => (
-                  <tr key={record._id} className="hover:bg-gray-50">
+                  <tr key={record._id} className="hover:bg-accent/10">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-foreground">
                           {getPatientName(record.patientId)}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-muted-foreground">
                           ID: {record.patientId}
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                       {getDoctorName(record.doctorId)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -245,12 +245,12 @@ export default function MedicalRecords() {
                         {record.visitInfo.type}
                       </span>
                       {record.visitInfo.isEmergency && (
-                        <span className="ml-2 text-red-600 inline-flex items-center">
+                        <span className="ml-2 text-destructive inline-flex items-center">
                           <Siren className="w-4 h-4" />
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                       {new Date(record.visitInfo.date).toLocaleDateString()}
                     </td>
                     {/* <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -262,19 +262,19 @@ export default function MedicalRecords() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
                         onClick={() => handleView(record)}
-                        className="text-blue-600 hover:text-blue-900 mr-4"
+                        className="text-primary hover:text-primary/80 mr-4"
                       >
                         View
                       </button>
                       <button
                         onClick={() => handleEdit(record)}
-                        className="text-indigo-600 hover:text-indigo-900 mr-4"
+                        className="text-accent hover:text-accent/80 mr-4"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(record)}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-destructive hover:text-destructive/80"
                       >
                         Delete
                       </button>
@@ -287,7 +287,7 @@ export default function MedicalRecords() {
 
           {filteredRecords.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-500">
+              <p className="text-muted-foreground">
                 No medical records found matching your criteria.
               </p>
             </div>

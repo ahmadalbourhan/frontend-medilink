@@ -135,21 +135,21 @@ export default function Doctors() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-semibold text-gray-900">Doctors</h1>
-            <p className="text-gray-600">
+            <h1 className="text-2xl font-semibold text-foreground">Doctors</h1>
+            <p className="text-muted-foreground">
               Manage doctor profiles and information
             </p>
           </div>
           <button
             onClick={handleCreate}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+            className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
           >
             Add New Doctor
           </button>
         </div>
 
-        <div className="bg-white shadow rounded-lg">
-          <div className="p-6 border-b border-gray-200">
+        <div className="bg-card text-card-foreground shadow rounded-lg">
+          <div className="p-6 border-b border-border">
             <div className="flex flex-col sm:flex-row items-center space-y-4 sm:space-y-0 sm:space-x-4">
               <div className="flex-1 w-full">
                 <input
@@ -157,14 +157,14 @@ export default function Doctors() {
                   placeholder="Search doctors by name, email, license, or specialization..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 />
               </div>
               <div>
                 <select
                   value={specializationFilter}
                   onChange={(e) => setSpecializationFilter(e.target.value)}
-                  className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 >
                   <option value="all">All Specializations</option>
                   {uniqueSpecializations.map((spec) => (
@@ -178,13 +178,13 @@ export default function Doctors() {
           </div>
 
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-border">
+              <thead className="bg-muted">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Doctor
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Specialization
                   </th>
                   {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -193,29 +193,29 @@ export default function Doctors() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Contact
                   </th> */}
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Institutions
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-card divide-y divide-border">
                 {filteredDoctors.map((doctor) => (
-                  <tr key={doctor._id} className="hover:bg-gray-50">
+                  <tr key={doctor._id} className="hover:bg-accent/10">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-foreground">
                           {doctor.name}
                         </div>
-                        <div className="text-sm text-gray-500">
+                        <div className="text-sm text-muted-foreground">
                           {doctor.email}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-secondary/50 text-secondary-foreground">
                         {doctor.specialization}
                       </span>
                     </td>
@@ -224,11 +224,11 @@ export default function Doctors() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <div>{doctor.phone}</div>
-                      <div className="text-gray-500 text-xs">
+                      <div className="text-muted-foreground text-xs">
                         {doctor.address}
                       </div>
                     </td> */}
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
                       <div className="max-w-xs truncate">
                         {getInstitutionNames(doctor.institutionIds)}
                       </div>
@@ -236,19 +236,19 @@ export default function Doctors() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
                         onClick={() => handleView(doctor)}
-                        className="text-blue-600 hover:text-blue-900 mr-4"
+                        className="text-primary hover:text-primary/80 mr-4"
                       >
                         View
                       </button>
                       <button
                         onClick={() => handleEdit(doctor)}
-                        className="text-indigo-600 hover:text-indigo-900 mr-4"
+                        className="text-accent hover:text-accent/80 mr-4"
                       >
                         Edit
                       </button>
                       <button
                         onClick={() => handleDelete(doctor)}
-                        className="text-red-600 hover:text-red-900"
+                        className="text-destructive hover:text-destructive/80"
                       >
                         Delete
                       </button>
@@ -261,7 +261,7 @@ export default function Doctors() {
 
           {filteredDoctors.length === 0 && (
             <div className="text-center py-12">
-              <p className="text-gray-500">
+              <p className="text-muted-foreground">
                 No doctors found matching your criteria.
               </p>
             </div>
