@@ -31,12 +31,12 @@ export default function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-card shadow-lg rounded-lg p-8 space-y-6"
+      className="bg-card text-card-foreground shadow-lg rounded-lg p-8 space-y-6"
     >
       <div>
         <label
           htmlFor="email"
-          className="block text-sm font-medium text-secondary-foreground mb-2"
+          className="block text-sm font-medium text-foreground mb-2"
         >
           Email Address
         </label>
@@ -45,7 +45,7 @@ export default function LoginForm() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-3 py-2 border border-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-card"
+          className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
           placeholder="admin@medicalcv.com"
           required
         />
@@ -54,7 +54,7 @@ export default function LoginForm() {
       <div>
         <label
           htmlFor="password"
-          className="block text-sm font-medium text-secondary-foreground mb-2"
+          className="block text-sm font-medium text-foreground mb-2"
         >
           Password
         </label>
@@ -63,7 +63,7 @@ export default function LoginForm() {
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-3 py-2 border border-secondary rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-card"
+          className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
           placeholder="admin"
           required
         />
@@ -72,7 +72,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-accent transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
+        className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-md hover:bg-primary/90 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-primary disabled:opacity-50"
       >
         {isLoading ? "Signing in..." : "Sign In"}
       </button>

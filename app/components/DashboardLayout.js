@@ -10,13 +10,46 @@ import {
   Building2,
   LogOut,
   Activity,
+  Sun,
+  Moon,
 } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export default function DashboardLayout({ children }) {
   const { user, logout } = useAuth();
+  const [isDark, setIsDark] = useState(false);
 
   const router = useRouter();
   const pathname = usePathname();
+
+  useEffect(() => {
+    // Initialize theme from localStorage
+    const stored =
+      typeof window !== "undefined" ? localStorage.getItem("theme") : null;
+    const prefersDark =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const enableDark = stored ? stored === "dark" : prefersDark;
+    setIsDark(enableDark);
+    if (enableDark) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const next = !isDark;
+    setIsDark(next);
+    if (next) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  };
 
   const handleLogout = () => {
     logout();
@@ -100,10 +133,22 @@ export default function DashboardLayout({ children }) {
                   Medical CV System
                 </h1>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-3">
                 <span className="text-sm text-muted-foreground">
                   Welcome, {user?.name}
                 </span>
+                <button
+                  type="button"
+                  onClick={toggleTheme}
+                  aria-label="Toggle theme"
+                  className="inline-flex items-center justify-center rounded-md border border-border p-2 text-muted-foreground hover:bg-accent/10"
+                >
+                  {isDark ? (
+                    <Sun className="w-4 h-4" />
+                  ) : (
+                    <Moon className="w-4 h-4" />
+                  )}
+                </button>
                 <button
                   onClick={handleLogout}
                   className="bg-destructive text-white px-4 py-2 rounded-md text-sm hover:bg-destructive/90 lg:hidden"
