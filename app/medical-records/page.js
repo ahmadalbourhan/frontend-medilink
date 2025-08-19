@@ -85,14 +85,14 @@ export default function MedicalRecords() {
 
   const getVisitTypeColor = (type) => {
     const colors = {
-      consultation: "bg-blue-100 text-blue-800",
-      emergency: "bg-red-100 text-red-800",
-      "follow-up": "bg-green-100 text-green-800",
-      surgery: "bg-purple-100 text-purple-800",
-      "lab-test": "bg-yellow-100 text-yellow-800",
-      immunization: "bg-indigo-100 text-indigo-800",
+      consultation: "bg-primary/10 text-primary",
+      emergency: "bg-destructive/10 text-destructive",
+      "follow-up": "bg-secondary/50 text-secondary-foreground",
+      surgery: "bg-accent/10 text-accent-foreground",
+      "lab-test": "bg-accent/10 text-accent-foreground",
+      immunization: "bg-accent/10 text-accent-foreground",
     };
-    return colors[type] || "bg-gray-100 text-gray-800";
+    return colors[type] || "bg-muted text-muted-foreground";
   };
 
   const handleView = (record) => {
@@ -335,15 +335,15 @@ export default function MedicalRecords() {
 
 function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-white">
+    <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+      <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-lg font-medium text-foreground">
             Medical Record Details
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-muted-foreground hover:text-foreground"
           >
             <svg
               className="w-6 h-6"
@@ -364,90 +364,92 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
         <div className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Patient
               </label>
-              <p className="mt-1 text-sm text-gray-900">
+              <p className="mt-1 text-sm text-foreground">
                 {getPatientName(record.patientId)}
               </p>
-              <p className="text-xs text-gray-500">ID: {record.patientId}</p>
+              <p className="text-xs text-muted-foreground">
+                ID: {record.patientId}
+              </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Doctor
               </label>
-              <p className="mt-1 text-sm text-gray-900">
+              <p className="mt-1 text-sm text-foreground">
                 {getDoctorName(record.doctorId)}
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Visit Type
               </label>
-              <p className="mt-1 text-sm text-gray-900 capitalize">
+              <p className="mt-1 text-sm text-foreground capitalize">
                 {record.visitInfo.type}
               </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Date
               </label>
-              <p className="mt-1 text-sm text-gray-900">
+              <p className="mt-1 text-sm text-foreground">
                 {new Date(record.visitInfo.date).toLocaleDateString()}
               </p>
             </div>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Symptoms
             </label>
-            <p className="mt-1 text-sm text-gray-900">
+            <p className="mt-1 text-sm text-foreground">
               {record.clinicalData.symptoms}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Diagnosis
             </label>
-            <p className="mt-1 text-sm text-gray-900">
+            <p className="mt-1 text-sm text-foreground">
               {record.clinicalData.diagnosis}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Treatment
             </label>
-            <p className="mt-1 text-sm text-gray-900">
+            <p className="mt-1 text-sm text-foreground">
               {record.clinicalData.treatment}
             </p>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Notes
             </label>
-            <p className="mt-1 text-sm text-gray-900">
+            <p className="mt-1 text-sm text-foreground">
               {record.clinicalData.notes}
             </p>
           </div>
 
           {record.prescriptions && record.prescriptions.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 Prescriptions
               </label>
               <div className="space-y-2">
                 {record.prescriptions.map((prescription, index) => (
-                  <div key={index} className="bg-gray-50 p-3 rounded">
+                  <div key={index} className="bg-muted p-3 rounded">
                     <p className="font-medium">{prescription.medicationName}</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                       {prescription.dosage} - {prescription.frequency} for{" "}
                       {prescription.duration}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       {prescription.instructions}
                     </p>
                   </div>
@@ -458,24 +460,24 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
 
           {record.labResults && record.labResults.length > 0 && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-muted-foreground mb-2">
                 Lab Results
               </label>
               <div className="space-y-2">
                 {record.labResults.map((result, index) => (
-                  <div key={index} className="bg-gray-50 p-3 rounded">
+                  <div key={index} className="bg-muted p-3 rounded">
                     <p className="font-medium">{result.testName}</p>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-sm text-muted-foreground">
                       Result: {result.result}
                     </p>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted-foreground">
                       Reference: {result.referenceRange}
                     </p>
                     <span
                       className={`inline-block px-2 py-1 text-xs rounded ${
                         result.status === "normal"
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
+                          ? "bg-secondary/50 text-secondary-foreground"
+                          : "bg-destructive/10 text-destructive"
                       }`}
                     >
                       {result.status}
@@ -490,7 +492,7 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
         <div className="mt-6 flex justify-end">
           <button
             onClick={onClose}
-            className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
+            className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
           >
             Close
           </button>
@@ -539,15 +541,15 @@ function EditRecordModal({ record, onClose, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-white">
+    <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+      <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-lg font-medium text-foreground">
             Edit Medical Record
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-muted-foreground hover:text-foreground"
           >
             <svg
               className="w-6 h-6"
@@ -568,14 +570,14 @@ function EditRecordModal({ record, onClose, onSave }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Visit Type
               </label>
               <select
                 name="visitType"
                 value={formData.visitType}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               >
                 <option value="consultation">Consultation</option>
@@ -587,7 +589,7 @@ function EditRecordModal({ record, onClose, onSave }) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Visit Date
               </label>
               <input
@@ -595,7 +597,7 @@ function EditRecordModal({ record, onClose, onSave }) {
                 name="visitDate"
                 value={formData.visitDate}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               />
             </div>
@@ -607,15 +609,15 @@ function EditRecordModal({ record, onClose, onSave }) {
               name="isEmergency"
               checked={formData.isEmergency}
               onChange={handleChange}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
             />
-            <label className="ml-2 block text-sm text-gray-900">
+            <label className="ml-2 block text-sm text-foreground">
               Emergency Visit
             </label>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Symptoms
             </label>
             <textarea
@@ -623,13 +625,13 @@ function EditRecordModal({ record, onClose, onSave }) {
               value={formData.symptoms}
               onChange={handleChange}
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Diagnosis
             </label>
             <textarea
@@ -637,13 +639,13 @@ function EditRecordModal({ record, onClose, onSave }) {
               value={formData.diagnosis}
               onChange={handleChange}
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Treatment
             </label>
             <textarea
@@ -651,13 +653,13 @@ function EditRecordModal({ record, onClose, onSave }) {
               value={formData.treatment}
               onChange={handleChange}
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Notes
             </label>
             <textarea
@@ -665,7 +667,7 @@ function EditRecordModal({ record, onClose, onSave }) {
               value={formData.notes}
               onChange={handleChange}
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
             />
           </div>
 
@@ -673,13 +675,13 @@ function EditRecordModal({ record, onClose, onSave }) {
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
+              className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
             >
               Save Changes
             </button>
@@ -733,15 +735,15 @@ function CreateRecordModal({ onClose, onSave }) {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-white">
+    <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
+      <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-900">
+          <h3 className="text-lg font-medium text-foreground">
             Add New Medical Record
           </h3>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-gray-600"
+            className="text-muted-foreground hover:text-foreground"
           >
             <svg
               className="w-6 h-6"
@@ -762,7 +764,7 @@ function CreateRecordModal({ onClose, onSave }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Patient ID
               </label>
               <input
@@ -770,13 +772,13 @@ function CreateRecordModal({ onClose, onSave }) {
                 name="patientId"
                 value={formData.patientId}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="e.g., PAT001"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Doctor ID
               </label>
               <input
@@ -784,20 +786,20 @@ function CreateRecordModal({ onClose, onSave }) {
                 name="doctorId"
                 value={formData.doctorId}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 placeholder="e.g., DOC001"
                 required
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Visit Type
               </label>
               <select
                 name="visitType"
                 value={formData.visitType}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               >
                 <option value="consultation">Consultation</option>
@@ -809,7 +811,7 @@ function CreateRecordModal({ onClose, onSave }) {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">
+              <label className="block text-sm font-medium text-muted-foreground">
                 Visit Date
               </label>
               <input
@@ -817,7 +819,7 @@ function CreateRecordModal({ onClose, onSave }) {
                 name="visitDate"
                 value={formData.visitDate}
                 onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               />
             </div>
@@ -829,15 +831,15 @@ function CreateRecordModal({ onClose, onSave }) {
               name="isEmergency"
               checked={formData.isEmergency}
               onChange={handleChange}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
             />
-            <label className="ml-2 block text-sm text-gray-900">
+            <label className="ml-2 block text-sm text-foreground">
               Emergency Visit
             </label>
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Symptoms
             </label>
             <textarea
@@ -845,13 +847,13 @@ function CreateRecordModal({ onClose, onSave }) {
               value={formData.symptoms}
               onChange={handleChange}
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Diagnosis
             </label>
             <textarea
@@ -859,13 +861,13 @@ function CreateRecordModal({ onClose, onSave }) {
               value={formData.diagnosis}
               onChange={handleChange}
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Treatment
             </label>
             <textarea
@@ -873,13 +875,13 @@ function CreateRecordModal({ onClose, onSave }) {
               value={formData.treatment}
               onChange={handleChange}
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">
+            <label className="block text-sm font-medium text-muted-foreground">
               Notes
             </label>
             <textarea
@@ -887,7 +889,7 @@ function CreateRecordModal({ onClose, onSave }) {
               value={formData.notes}
               onChange={handleChange}
               rows={3}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
             />
           </div>
 
@@ -895,13 +897,13 @@ function CreateRecordModal({ onClose, onSave }) {
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-400"
+              className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700"
+              className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
             >
               Add Record
             </button>
