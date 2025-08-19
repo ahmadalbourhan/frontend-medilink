@@ -7,6 +7,8 @@ import DashboardLayout from "../components/DashboardLayout";
 import { mockPatients } from "../lib/mockData";
 import DangerConfirmModal from "../components/DangerConfirmModal";
 import { AlertTriangle, Baby } from "lucide-react";
+import TranslateButton from "../components/TranslateButton";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Patients() {
   const { user, loading } = useAuth();
@@ -20,6 +22,7 @@ export default function Patients() {
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [patientToDelete, setPatientToDelete] = useState(null);
+  const { isArabic } = useLanguage();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -128,16 +131,20 @@ export default function Patients() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-semibold text-foreground">Patients</h1>
+            <h1 className="text-2xl font-semibold text-foreground">
+              {isArabic ? "المرضى" : "Patients"}
+            </h1>
             <p className="text-muted-foreground">
-              Manage patient records and information
+              {isArabic
+                ? "إدارة سجلات ومعلومات المرضى"
+                : "Manage patient records and information"}
             </p>
           </div>
           <button
             onClick={handleCreate}
             className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
           >
-            Add New Patient
+            {isArabic ? "إضافة مريض جديد" : "Add New Patient"}
           </button>
         </div>
 
@@ -147,7 +154,11 @@ export default function Patients() {
               <div className="flex-1">
                 <input
                   type="text"
-                  placeholder="Search patients by name, ID, or email..."
+                  placeholder={
+                    isArabic
+                      ? "ابحث عن المرضى بالاسم أو الهوية أو البريد الإلكتروني..."
+                      : "Search patients by name, ID, or email..."
+                  }
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
@@ -161,22 +172,22 @@ export default function Patients() {
               <thead className="bg-muted">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Patient
+                    {isArabic ? "المريض" : "Patient"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Patient ID
+                    {isArabic ? "رقم المريض" : "Patient ID"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Age/Gender
+                    {isArabic ? "العمر/الجنس" : "Age/Gender"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Blood Type
+                    {isArabic ? "فصيلة الدم" : "Blood Type"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Contact
+                    {isArabic ? "جهة الاتصال" : "Contact"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Actions
+                    {isArabic ? "الإجراءات" : "Actions"}
                   </th>
                 </tr>
               </thead>
@@ -197,7 +208,9 @@ export default function Patients() {
                         {patient.allergies && (
                           <div className="text-sm text-destructive flex items-center gap-1">
                             <AlertTriangle className="w-4 h-4" />
-                            Allergies: {patient.allergies}
+                            {isArabic
+                              ? `الحساسية: ${patient.allergies}`
+                              : `Allergies: ${patient.allergies}`}
                           </div>
                         )}
                       </div>
@@ -206,7 +219,7 @@ export default function Patients() {
                       {patient.patientId}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                      {calculateAge(patient.dateOfBirth)} years,{" "}
+                      {calculateAge(patient.dateOfBirth)} {isArabic ? "سنوات" : "years"},{" "}
                       {patient.gender}
                       {patient.isPregnant && (
                         <span className="ml-2 text-pink-600 inline-flex items-center">
@@ -233,7 +246,7 @@ export default function Patients() {
                         }}
                         className="text-primary hover:text-primary/80 mr-4"
                       >
-                        View
+                        {isArabic ? "عرض" : "View"}
                       </button>
                       <button
                         onClick={(e) => {
@@ -242,7 +255,7 @@ export default function Patients() {
                         }}
                         className="text-accent hover:text-accent/80 mr-4"
                       >
-                        Edit
+                        {isArabic ? "تعديل" : "Edit"}
                       </button>
                       <button
                         onClick={(e) => {
@@ -251,7 +264,7 @@ export default function Patients() {
                         }}
                         className="text-destructive hover:text-destructive/80"
                       >
-                        Delete
+                        {isArabic ? "حذف" : "Delete"}
                       </button>
                     </td>
                   </tr>
@@ -263,7 +276,9 @@ export default function Patients() {
           {filteredPatients.length === 0 && (
             <div className="text-center py-12">
               <p className="text-muted-foreground">
-                No patients found matching your search.
+                {isArabic
+                  ? "لا توجد مرضى تطابق بحثك."
+                  : "No patients found matching your search."}
               </p>
             </div>
           )}
@@ -296,8 +311,10 @@ export default function Patients() {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={confirmDelete}
-        title="Delete Patient"
-        message="Are you sure you want to delete this patient? This will permanently remove all patient data and medical records."
+        title={isArabic ? "حذف المريض" : "Delete Patient"}
+        message={isArabic
+          ? "هل أنت متأكد أنك تريد حذف هذا المريض؟ سيؤدي ذلك إلى إزالة جميع بيانات المريض وسجلاته الطبية بشكل دائم."
+          : "Are you sure you want to delete this patient? This will permanently remove all patient data and medical records."}
         itemName={patientToDelete?.name || ""}
       />
     </DashboardLayout>
@@ -305,6 +322,8 @@ export default function Patients() {
 }
 
 function ViewPatientModal({ patient, onClose }) {
+  const { isArabic } = useLanguage();
+
   const calculateAge = (dateOfBirth) => {
     const today = new Date();
     const birthDate = new Date(dateOfBirth);
@@ -324,7 +343,7 @@ function ViewPatientModal({ patient, onClose }) {
       <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-foreground">
-            Patient Details
+            {isArabic ? "تفاصيل المريض" : "Patient Details"}
           </h3>
           <button
             onClick={onClose}
@@ -350,13 +369,13 @@ function ViewPatientModal({ patient, onClose }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Name
+                {isArabic ? "الاسم" : "Name"}
               </label>
               <p className="mt-1 text-sm text-foreground">{patient.name}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Patient ID
+                {isArabic ? "رقم المريض" : "Patient ID"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {patient.patientId}
@@ -364,15 +383,15 @@ function ViewPatientModal({ patient, onClose }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Age
+                {isArabic ? "العمر" : "Age"}
               </label>
               <p className="mt-1 text-sm text-foreground">
-                {calculateAge(patient.dateOfBirth)} years
+                {calculateAge(patient.dateOfBirth)} {isArabic ? "سنوات" : "years"}
               </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Gender
+                {isArabic ? "الجنس" : "Gender"}
               </label>
               <p className="mt-1 text-sm text-foreground capitalize">
                 {patient.gender}
@@ -380,7 +399,7 @@ function ViewPatientModal({ patient, onClose }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Blood Type
+                {isArabic ? "فصيلة الدم" : "Blood Type"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {patient.bloodType}
@@ -388,7 +407,7 @@ function ViewPatientModal({ patient, onClose }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Phone
+                {isArabic ? "الهاتف" : "Phone"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {patient.contact.phone}
@@ -396,7 +415,7 @@ function ViewPatientModal({ patient, onClose }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Email
+                {isArabic ? "البريد الإلكتروني" : "Email"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {patient.contact.email}
@@ -404,7 +423,7 @@ function ViewPatientModal({ patient, onClose }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Emergency Contact
+                {isArabic ? "جهة الاتصال في حالات الطوارئ" : "Emergency Contact"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {patient.emergencyContact.name} (
@@ -417,7 +436,7 @@ function ViewPatientModal({ patient, onClose }) {
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Address
+              {isArabic ? "العنوان" : "Address"}
             </label>
             <p className="mt-1 text-sm text-foreground">
               {patient.contact.address}
@@ -425,7 +444,7 @@ function ViewPatientModal({ patient, onClose }) {
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Allergies
+              {isArabic ? "الحساسية" : "Allergies"}
             </label>
             <p className="mt-1 text-sm text-foreground">
               {patient.allergies || "None known"}
@@ -433,13 +452,14 @@ function ViewPatientModal({ patient, onClose }) {
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Insurance
+              {isArabic ? "التأمين" : "Insurance"}
             </label>
             <p className="mt-1 text-sm text-foreground">
               {patient.insuranceInfo.provider} ({patient.insuranceInfo.type})
             </p>
             <p className="text-sm text-muted-foreground">
-              Policy: {patient.insuranceInfo.policyNumber}
+              {isArabic ? "رقم البوليصة: " : "Policy: "}{" "}
+              {patient.insuranceInfo.policyNumber}
             </p>
           </div>
         </div>
@@ -449,7 +469,7 @@ function ViewPatientModal({ patient, onClose }) {
             onClick={onClose}
             className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
           >
-            Close
+            {isArabic ? "إغلاق" : "Close"}
           </button>
         </div>
       </div>
@@ -458,6 +478,8 @@ function ViewPatientModal({ patient, onClose }) {
 }
 
 function EditPatientModal({ patient, onClose, onSave }) {
+  const { isArabic } = useLanguage();
+
   const [formData, setFormData] = useState({
     name: patient.name,
     dateOfBirth: patient.dateOfBirth.split("T")[0],
@@ -511,7 +533,9 @@ function EditPatientModal({ patient, onClose, onSave }) {
     <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
       <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-foreground">Edit Patient</h3>
+          <h3 className="text-lg font-medium text-foreground">
+            {isArabic ? "تعديل المريض" : "Edit Patient"}
+          </h3>
           <button
             onClick={onClose}
             className="text-muted-foreground hover:text-foreground"
@@ -536,7 +560,7 @@ function EditPatientModal({ patient, onClose, onSave }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Name
+                {isArabic ? "الاسم" : "Name"}
               </label>
               <input
                 type="text"
@@ -549,7 +573,7 @@ function EditPatientModal({ patient, onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Date of Birth
+                {isArabic ? "تاريخ الميلاد" : "Date of Birth"}
               </label>
               <input
                 type="date"
@@ -562,7 +586,7 @@ function EditPatientModal({ patient, onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Gender
+                {isArabic ? "الجنس" : "Gender"}
               </label>
               <select
                 name="gender"
@@ -571,14 +595,14 @@ function EditPatientModal({ patient, onClose, onSave }) {
                 className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               >
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
+                <option value="male">{isArabic ? "ذكر" : "Male"}</option>
+                <option value="female">{isArabic ? "أنثى" : "Female"}</option>
+                <option value="other">{isArabic ? "آخر" : "Other"}</option>
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Blood Type
+                {isArabic ? "فصيلة الدم" : "Blood Type"}
               </label>
               <select
                 name="bloodType"
@@ -599,7 +623,7 @@ function EditPatientModal({ patient, onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Phone
+                {isArabic ? "الهاتف" : "Phone"}
               </label>
               <input
                 type="tel"
@@ -612,7 +636,7 @@ function EditPatientModal({ patient, onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Email
+                {isArabic ? "البريد الإلكتروني" : "Email"}
               </label>
               <input
                 type="email"
@@ -627,7 +651,7 @@ function EditPatientModal({ patient, onClose, onSave }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Address
+              {isArabic ? "العنوان" : "Address"}
             </label>
             <textarea
               name="address"
@@ -641,12 +665,12 @@ function EditPatientModal({ patient, onClose, onSave }) {
 
           <div className="border-t pt-4">
             <h4 className="text-md font-medium text-foreground mb-3">
-              Emergency Contact
+              {isArabic ? "جهة الاتصال في حالات الطوارئ" : "Emergency Contact"}
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Name
+                  {isArabic ? "الاسم" : "Name"}
                 </label>
                 <input
                   type="text"
@@ -659,7 +683,7 @@ function EditPatientModal({ patient, onClose, onSave }) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Phone
+                  {isArabic ? "الهاتف" : "Phone"}
                 </label>
                 <input
                   type="tel"
@@ -672,7 +696,7 @@ function EditPatientModal({ patient, onClose, onSave }) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Relationship
+                  {isArabic ? "العلاقة" : "Relationship"}
                 </label>
                 <input
                   type="text"
@@ -688,7 +712,7 @@ function EditPatientModal({ patient, onClose, onSave }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Allergies
+              {isArabic ? "الحساسية" : "Allergies"}
             </label>
             <textarea
               name="allergies"
@@ -696,7 +720,11 @@ function EditPatientModal({ patient, onClose, onSave }) {
               onChange={handleChange}
               rows={2}
               className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
-              placeholder="List any known allergies"
+              placeholder={
+                isArabic
+                  ? "اكتب أي حساسية معروفة"
+                  : "List any known allergies"
+              }
             />
           </div>
 
@@ -706,13 +734,13 @@ function EditPatientModal({ patient, onClose, onSave }) {
               onClick={onClose}
               className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
             >
-              Cancel
+              {isArabic ? "إلغاء" : "Cancel"}
             </button>
             <button
               type="submit"
               className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
             >
-              Save Changes
+              {isArabic ? "حفظ التغييرات" : "Save Changes"}
             </button>
           </div>
         </form>
@@ -722,6 +750,8 @@ function EditPatientModal({ patient, onClose, onSave }) {
 }
 
 function CreatePatientModal({ onClose, onSave }) {
+  const { isArabic } = useLanguage();
+
   const [formData, setFormData] = useState({
     name: "",
     dateOfBirth: "",
@@ -777,7 +807,7 @@ function CreatePatientModal({ onClose, onSave }) {
       <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-foreground">
-            Add New Patient
+            {isArabic ? "إضافة مريض جديد" : "Add New Patient"}
           </h3>
           <button
             onClick={onClose}
@@ -803,7 +833,7 @@ function CreatePatientModal({ onClose, onSave }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Name
+                {isArabic ? "الاسم" : "Name"}
               </label>
               <input
                 type="text"
@@ -816,7 +846,7 @@ function CreatePatientModal({ onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Date of Birth
+                {isArabic ? "تاريخ الميلاد" : "Date of Birth"}
               </label>
               <input
                 type="date"
@@ -829,7 +859,7 @@ function CreatePatientModal({ onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Gender
+                {isArabic ? "الجنس" : "Gender"}
               </label>
               <select
                 name="gender"
@@ -838,14 +868,14 @@ function CreatePatientModal({ onClose, onSave }) {
                 className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               >
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
+                <option value="male">{isArabic ? "ذكر" : "Male"}</option>
+                <option value="female">{isArabic ? "أنثى" : "Female"}</option>
+                <option value="other">{isArabic ? "آخر" : "Other"}</option>
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Blood Type
+                {isArabic ? "فصيلة الدم" : "Blood Type"}
               </label>
               <select
                 name="bloodType"
@@ -866,7 +896,7 @@ function CreatePatientModal({ onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Phone
+                {isArabic ? "الهاتف" : "Phone"}
               </label>
               <input
                 type="tel"
@@ -879,7 +909,7 @@ function CreatePatientModal({ onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Email
+                {isArabic ? "البريد الإلكتروني" : "Email"}
               </label>
               <input
                 type="email"
@@ -894,7 +924,7 @@ function CreatePatientModal({ onClose, onSave }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Address
+              {isArabic ? "العنوان" : "Address"}
             </label>
             <textarea
               name="address"
@@ -908,12 +938,12 @@ function CreatePatientModal({ onClose, onSave }) {
 
           <div className="border-t pt-4">
             <h4 className="text-md font-medium text-foreground mb-3">
-              Emergency Contact
+              {isArabic ? "جهة الاتصال في حالات الطوارئ" : "Emergency Contact"}
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Name
+                  {isArabic ? "الاسم" : "Name"}
                 </label>
                 <input
                   type="text"
@@ -926,7 +956,7 @@ function CreatePatientModal({ onClose, onSave }) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Phone
+                  {isArabic ? "الهاتف" : "Phone"}
                 </label>
                 <input
                   type="tel"
@@ -939,7 +969,7 @@ function CreatePatientModal({ onClose, onSave }) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Relationship
+                  {isArabic ? "العلاقة" : "Relationship"}
                 </label>
                 <input
                   type="text"
@@ -955,7 +985,7 @@ function CreatePatientModal({ onClose, onSave }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Allergies
+              {isArabic ? "الحساسية" : "Allergies"}
             </label>
             <textarea
               name="allergies"
@@ -963,18 +993,22 @@ function CreatePatientModal({ onClose, onSave }) {
               onChange={handleChange}
               rows={2}
               className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
-              placeholder="List any known allergies"
+              placeholder={
+                isArabic
+                  ? "اكتب أي حساسية معروفة"
+                  : "List any known allergies"
+              }
             />
           </div>
 
           <div className="border-t pt-4">
             <h4 className="text-md font-medium text-foreground mb-3">
-              Insurance Information
+              {isArabic ? "معلومات التأمين" : "Insurance Information"}
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Provider
+                  {isArabic ? "المزود" : "Provider"}
                 </label>
                 <input
                   type="text"
@@ -987,7 +1021,7 @@ function CreatePatientModal({ onClose, onSave }) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Type
+                  {isArabic ? "النوع" : "Type"}
                 </label>
                 <input
                   type="text"
@@ -1000,7 +1034,7 @@ function CreatePatientModal({ onClose, onSave }) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Policy Number
+                  {isArabic ? "رقم البوليصة" : "Policy Number"}
                 </label>
                 <input
                   type="text"
@@ -1020,13 +1054,13 @@ function CreatePatientModal({ onClose, onSave }) {
               onClick={onClose}
               className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
             >
-              Cancel
+              {isArabic ? "إلغاء" : "Cancel"}
             </button>
             <button
               type="submit"
               className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
             >
-              Add Patient
+              {isArabic ? "إضافة مريض" : "Add Patient"}
             </button>
           </div>
         </form>

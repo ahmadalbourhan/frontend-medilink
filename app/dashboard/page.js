@@ -10,6 +10,8 @@ import {
   mockMedicalRecords,
   mockInstitutions,
 } from "../lib/mockData";
+import TranslateButton from "../components/TranslateButton";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Dashboard() {
   const { user, loading } = useAuth();
@@ -20,6 +22,7 @@ export default function Dashboard() {
     totalRecords: 0,
     totalInstitutions: 0,
   });
+  const { isArabic } = useLanguage();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -75,13 +78,17 @@ export default function Dashboard() {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back, {user.name}</p>
+          <h1 className="text-2xl font-semibold text-foreground">
+            {isArabic ? "لوحة القيادة" : "Dashboard"}
+          </h1>
+          <p className="text-muted-foreground">
+            {isArabic ? "مرحبًا بعودتك" : `Welcome back, ${user.name}`}
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatCard
-            title="Total Patients"
+            title={isArabic ? "إجمالي المرضى" : "Total Patients"}
             value={stats.totalPatients}
             icon={
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -91,7 +98,7 @@ export default function Dashboard() {
             color="blue"
           />
           <StatCard
-            title="Total Doctors"
+            title={isArabic ? "إجمالي الأطباء" : "Total Doctors"}
             value={stats.totalDoctors}
             icon={
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -101,7 +108,7 @@ export default function Dashboard() {
             color="green"
           />
           <StatCard
-            title="Medical Records"
+            title={isArabic ? "السجلات الطبية" : "Medical Records"}
             value={stats.totalRecords}
             icon={
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -111,7 +118,7 @@ export default function Dashboard() {
             color="purple"
           />
           <StatCard
-            title="Institutions"
+            title={isArabic ? "المؤسسات" : "Institutions"}
             value={stats.totalInstitutions}
             icon={
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -125,7 +132,7 @@ export default function Dashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-card rounded-lg shadow p-6 text-card-foreground">
             <h3 className="text-lg font-medium text-foreground mb-4">
-              Recent Patients
+              {isArabic ? "المرضى الجدد" : "Recent Patients"}
             </h3>
             <div className="space-y-3">
               {mockPatients.slice(0, 5).map((patient) => (
@@ -138,7 +145,8 @@ export default function Dashboard() {
                       {patient.name}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      ID: {patient.patientId}
+                      {isArabic ? "الهوية: " : "ID: "}
+                      {patient.patientId}
                     </p>
                   </div>
                   <span className="text-sm text-muted-foreground">
@@ -151,7 +159,7 @@ export default function Dashboard() {
 
           <div className="bg-card rounded-lg shadow p-6 text-card-foreground">
             <h3 className="text-lg font-medium text-foreground mb-4">
-              Recent Records
+              {isArabic ? "السجلات الأخيرة" : "Recent Records"}
             </h3>
             <div className="space-y-3">
               {mockMedicalRecords.slice(0, 5).map((record) => (
@@ -164,7 +172,8 @@ export default function Dashboard() {
                       {record.visitInfo.type}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      Patient: {record.patientId}
+                      {isArabic ? "المريض: " : "Patient: "}
+                      {record.patientId}
                     </p>
                   </div>
                   <span className="text-sm text-muted-foreground">

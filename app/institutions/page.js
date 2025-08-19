@@ -6,10 +6,13 @@ import { useRouter } from "next/navigation";
 import DashboardLayout from "../components/DashboardLayout";
 import { mockInstitutions } from "../lib/mockData";
 import DangerConfirmModal from "../components/DangerConfirmModal";
+import TranslateButton from "../components/TranslateButton";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Institutions() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { isArabic } = useLanguage();
   const [institutions, setInstitutions] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredInstitutions, setFilteredInstitutions] = useState([]);
@@ -136,17 +139,19 @@ export default function Institutions() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-semibold text-foreground">
-              Institutions
+              {isArabic ? "المؤسسات" : "Institutions"}
             </h1>
             <p className="text-muted-foreground">
-              Manage healthcare institutions
+              {isArabic
+                ? "إدارة المؤسسات الصحية"
+                : "Manage healthcare institutions"}
             </p>
           </div>
           <button
             onClick={handleCreate}
             className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
           >
-            Add New Institution
+            {isArabic ? "إضافة مؤسسة جديدة" : "Add New Institution"}
           </button>
         </div>
 
@@ -156,7 +161,11 @@ export default function Institutions() {
               <div className="flex-1 w-full">
                 <input
                   type="text"
-                  placeholder="Search institutions by name, address, or email..."
+                  placeholder={
+                    isArabic
+                      ? "ابحث عن المؤسسات بالاسم أو العنوان أو البريد الإلكتروني..."
+                      : "Search institutions by name, address, or email..."
+                  }
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
@@ -168,9 +177,15 @@ export default function Institutions() {
                   onChange={(e) => setTypeFilter(e.target.value)}
                   className="px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 >
-                  <option value="all">All Types</option>
-                  <option value="hospital">Hospital</option>
-                  <option value="clinic">Clinic</option>
+                  <option value="all">
+                    {isArabic ? "جميع الأنواع" : "All Types"}
+                  </option>
+                  <option value="hospital">
+                    {isArabic ? "مستشفى" : "Hospital"}
+                  </option>
+                  <option value="clinic">
+                    {isArabic ? "عيادة" : "Clinic"}
+                  </option>
                 </select>
               </div>
             </div>
@@ -181,19 +196,19 @@ export default function Institutions() {
               <thead className="bg-muted">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Institution
+                    {isArabic ? "المؤسسة" : "Institution"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Type
+                    {isArabic ? "النوع" : "Type"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Contact
+                    {isArabic ? "جهة الاتصال" : "Contact"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Services
+                    {isArabic ? "الخدمات" : "Services"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Actions
+                    {isArabic ? "الإجراءات" : "Actions"}
                   </th>
                 </tr>
               </thead>
@@ -236,19 +251,19 @@ export default function Institutions() {
                         onClick={() => handleView(institution)}
                         className="text-primary hover:text-primary/80 mr-4"
                       >
-                        View
+                        {isArabic ? "عرض" : "View"}
                       </button>
                       <button
                         onClick={() => handleEdit(institution)}
                         className="text-accent hover:text-accent/80 mr-4"
                       >
-                        Edit
+                        {isArabic ? "تعديل" : "Edit"}
                       </button>
                       <button
                         onClick={() => handleDelete(institution)}
                         className="text-destructive hover:text-destructive/80"
                       >
-                        Delete
+                        {isArabic ? "حذف" : "Delete"}
                       </button>
                     </td>
                   </tr>
@@ -259,7 +274,11 @@ export default function Institutions() {
 
           {filteredInstitutions.length === 0 && (
             <div className="text-center py-12 text-muted-foreground">
-              <p>No institutions found matching your criteria.</p>
+              <p>
+                {isArabic
+                  ? "لم يتم العثور على مؤسسات تطابق معايير البحث الخاصة بك."
+                  : "No institutions found matching your criteria."}
+              </p>
             </div>
           )}
         </div>
@@ -291,8 +310,10 @@ export default function Institutions() {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={confirmDelete}
-        title="Delete Institution"
-        message="Are you sure you want to delete this institution? This will permanently remove the institution and all associated data including doctors, patients, and medical records."
+        title={isArabic ? "حذف المؤسسة" : "Delete Institution"}
+        message={isArabic
+          ? "هل أنت متأكد أنك تريد حذف هذه المؤسسة؟ سيؤدي ذلك إلى إزالة المؤسسة وجميع البيانات المرتبطة بها بشكل دائم بما في ذلك الأطباء والمرضى والسجلات الطبية."
+          : "Are you sure you want to delete this institution? This will permanently remove the institution and all associated data including doctors, patients, and medical records."}
         itemName={institutionToDelete?.name || ""}
       />
     </DashboardLayout>
@@ -300,12 +321,14 @@ export default function Institutions() {
 }
 
 function ViewInstitutionModal({ institution, onClose }) {
+  const { isArabic } = useLanguage();
+
   return (
     <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-foreground">
-            Institution Details
+            {institution.name}
           </h3>
           <button
             onClick={onClose}
@@ -331,13 +354,13 @@ function ViewInstitutionModal({ institution, onClose }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Name
+                {isArabic ? "اسم المؤسسة" : "Name"}
               </label>
               <p className="mt-1 text-sm text-foreground">{institution.name}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Type
+                {isArabic ? "النوع" : "Type"}
               </label>
               <p className="mt-1 text-sm text-foreground capitalize">
                 {institution.type}
@@ -345,7 +368,7 @@ function ViewInstitutionModal({ institution, onClose }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Phone
+                {isArabic ? "الهاتف" : "Phone"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {institution.contact.phone}
@@ -353,7 +376,7 @@ function ViewInstitutionModal({ institution, onClose }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Email
+                {isArabic ? "البريد الإلكتروني" : "Email"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {institution.contact.email}
@@ -361,7 +384,7 @@ function ViewInstitutionModal({ institution, onClose }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Role
+                {isArabic ? "الدور" : "Role"}
               </label>
               <p className="mt-1 text-sm text-foreground capitalize">
                 {institution.role}
@@ -370,7 +393,7 @@ function ViewInstitutionModal({ institution, onClose }) {
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Address
+              {isArabic ? "العنوان" : "Address"}
             </label>
             <p className="mt-1 text-sm text-foreground">
               {institution.contact.address}
@@ -378,7 +401,7 @@ function ViewInstitutionModal({ institution, onClose }) {
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Services
+              {isArabic ? "الخدمات" : "Services"}
             </label>
             <p className="mt-1 text-sm text-foreground">
               {institution.services.join(", ")}
@@ -391,7 +414,7 @@ function ViewInstitutionModal({ institution, onClose }) {
             onClick={onClose}
             className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
           >
-            Close
+            {isArabic ? "إغلاق" : "Close"}
           </button>
         </div>
       </div>
@@ -400,6 +423,7 @@ function ViewInstitutionModal({ institution, onClose }) {
 }
 
 function EditInstitutionModal({ institution, onClose, onSave }) {
+  const { isArabic } = useLanguage();
   const [formData, setFormData] = useState({
     name: institution.name,
     type: institution.type,
@@ -439,7 +463,7 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
       <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-foreground">
-            Edit Institution
+            {isArabic ? "تعديل المؤسسة" : "Edit Institution"}
           </h3>
           <button
             onClick={onClose}
@@ -465,7 +489,7 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Name
+                {isArabic ? "اسم المؤسسة" : "Name"}
               </label>
               <input
                 type="text"
@@ -478,7 +502,7 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Type
+                {isArabic ? "النوع" : "Type"}
               </label>
               <select
                 name="type"
@@ -487,13 +511,17 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
                 className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               >
-                <option value="hospital">Hospital</option>
-                <option value="clinic">Clinic</option>
+                <option value="hospital">
+                  {isArabic ? "مستشفى" : "Hospital"}
+                </option>
+                <option value="clinic">
+                  {isArabic ? "عيادة" : "Clinic"}
+                </option>
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Phone
+                {isArabic ? "الهاتف" : "Phone"}
               </label>
               <input
                 type="tel"
@@ -506,7 +534,7 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Email
+                {isArabic ? "البريد الإلكتروني" : "Email"}
               </label>
               <input
                 type="email"
@@ -519,7 +547,7 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Role
+                {isArabic ? "الدور" : "Role"}
               </label>
               <select
                 name="role"
@@ -528,14 +556,18 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
                 className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               >
-                <option value="admin">System Admin</option>
-                <option value="admin_institutions">Institution Admin</option>
+                <option value="admin">
+                  {isArabic ? "مدير النظام" : "System Admin"}
+                </option>
+                <option value="admin_institutions">
+                  {isArabic ? "مدير المؤسسة" : "Institution Admin"}
+                </option>
               </select>
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Address
+              {isArabic ? "العنوان" : "Address"}
             </label>
             <textarea
               name="address"
@@ -548,7 +580,7 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Services (comma-separated)
+              {isArabic ? "الخدمات (مفصولة بفواصل)" : "Services (comma-separated)"}
             </label>
             <textarea
               name="services"
@@ -567,13 +599,13 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
               onClick={onClose}
               className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
             >
-              Cancel
+              {isArabic ? "إلغاء" : "Cancel"}
             </button>
             <button
               type="submit"
               className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
             >
-              Save Changes
+              {isArabic ? "حفظ التغييرات" : "Save Changes"}
             </button>
           </div>
         </form>
@@ -583,6 +615,7 @@ function EditInstitutionModal({ institution, onClose, onSave }) {
 }
 
 function CreateInstitutionModal({ onClose, onSave }) {
+  const { isArabic } = useLanguage();
   const [formData, setFormData] = useState({
     name: "",
     type: "hospital",
@@ -623,7 +656,7 @@ function CreateInstitutionModal({ onClose, onSave }) {
       <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-foreground">
-            Create New Institution
+            {isArabic ? "إنشاء مؤسسة جديدة" : "Create New Institution"}
           </h3>
           <button
             onClick={onClose}
@@ -649,12 +682,12 @@ function CreateInstitutionModal({ onClose, onSave }) {
           {/* Institution Details */}
           <div>
             <h4 className="text-md font-medium text-foreground mb-3">
-              Institution Details
+              {isArabic ? "تفاصيل المؤسسة" : "Institution Details"}
             </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Institution Name
+                  {isArabic ? "اسم المؤسسة" : "Institution Name"}
                 </label>
                 <input
                   type="text"
@@ -667,7 +700,7 @@ function CreateInstitutionModal({ onClose, onSave }) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Type
+                  {isArabic ? "النوع" : "Type"}
                 </label>
                 <select
                   name="type"
@@ -676,13 +709,17 @@ function CreateInstitutionModal({ onClose, onSave }) {
                   className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
                 >
-                  <option value="hospital">Hospital</option>
-                  <option value="clinic">Clinic</option>
+                  <option value="hospital">
+                    {isArabic ? "مستشفى" : "Hospital"}
+                  </option>
+                  <option value="clinic">
+                    {isArabic ? "عيادة" : "Clinic"}
+                  </option>
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Phone
+                  {isArabic ? "الهاتف" : "Phone"}
                 </label>
                 <input
                   type="tel"
@@ -695,7 +732,7 @@ function CreateInstitutionModal({ onClose, onSave }) {
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Email
+                  {isArabic ? "البريد الإلكتروني" : "Email"}
                 </label>
                 <input
                   type="email"
@@ -709,7 +746,7 @@ function CreateInstitutionModal({ onClose, onSave }) {
             </div>
             <div className="mt-4">
               <label className="block text-sm font-medium text-muted-foreground">
-                Address
+                {isArabic ? "العنوان" : "Address"}
               </label>
               <textarea
                 name="address"
@@ -722,7 +759,7 @@ function CreateInstitutionModal({ onClose, onSave }) {
             </div>
             <div className="mt-4">
               <label className="block text-sm font-medium text-muted-foreground">
-                Services (comma-separated)
+                {isArabic ? "الخدمات (مفصولة بفواصل)" : "Services (comma-separated)"}
               </label>
               <textarea
                 name="services"
@@ -738,15 +775,17 @@ function CreateInstitutionModal({ onClose, onSave }) {
 
           <div className="border-t pt-6">
             <h4 className="text-md font-medium text-foreground mb-3">
-              Institution Login Credentials
+              {isArabic ? "بيانات تسجيل دخول المؤسسة" : "Institution Login Credentials"}
             </h4>
             <p className="text-sm text-muted-foreground mb-4">
-              Set up login credentials for this institution
+              {isArabic
+                ? "قم بإعداد بيانات اعتماد تسجيل الدخول لهذه المؤسسة"
+                : "Set up login credentials for this institution"}
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Role
+                  {isArabic ? "الدور" : "Role"}
                 </label>
                 <select
                   name="role"
@@ -755,13 +794,17 @@ function CreateInstitutionModal({ onClose, onSave }) {
                   className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                   required
                 >
-                  <option value="admin">System Admin</option>
-                  <option value="admin_institutions">Institution Admin</option>
+                  <option value="admin">
+                    {isArabic ? "مدير النظام" : "System Admin"}
+                  </option>
+                  <option value="admin_institutions">
+                    {isArabic ? "مدير المؤسسة" : "Institution Admin"}
+                  </option>
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-muted-foreground">
-                  Password
+                  {isArabic ? "كلمة المرور" : "Password"}
                 </label>
                 <input
                   type="password"
@@ -773,7 +816,7 @@ function CreateInstitutionModal({ onClose, onSave }) {
                   required
                 />
                 <p className="mt-1 text-sm text-muted-foreground">
-                  Minimum 6 characters
+                  {isArabic ? "حد أدنى 6 أحرف" : "Minimum 6 characters"}
                 </p>
               </div>
             </div>
@@ -785,17 +828,23 @@ function CreateInstitutionModal({ onClose, onSave }) {
               onClick={onClose}
               className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
             >
-              Cancel
+              {isArabic ? "إلغاء" : "Cancel"}
             </button>
             <button
               type="submit"
               className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
             >
-              Create Institution
+              {isArabic ? "إنشاء المؤسسة" : "Create Institution"}
             </button>
           </div>
         </form>
       </div>
     </div>
   );
+}
+
+function SomeNewModal({ ...props }) {
+  const { isArabic } = useLanguage();
+
+  return <div>{/* Modal code using isArabic */}</div>;
 }

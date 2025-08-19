@@ -14,10 +14,13 @@ import {
   Moon,
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { useLanguage } from "../contexts/LanguageContext"; // <-- Add this
 
 export default function DashboardLayout({ children }) {
   const { user, logout } = useAuth();
   const [isDark, setIsDark] = useState(false);
+
+  const { isArabic, toggleLanguage } = useLanguage(); // <-- Use context
 
   const router = useRouter();
   const pathname = usePathname();
@@ -57,13 +60,12 @@ export default function DashboardLayout({ children }) {
   };
 
   const navigation = [
-    { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
-    { name: "Patients", href: "/patients", icon: Users },
-    { name: "Doctors", href: "/doctors", icon: UserCheck },
-    { name: "Medical Records", href: "/medical-records", icon: FileText },
-    // Only show institutions tab for admin users, not admin_institutions
+    { name: isArabic ? "لوحة القيادة" : "Dashboard", href: "/dashboard", icon: BarChart3 },
+    { name: isArabic ? "المرضى" : "Patients", href: "/patients", icon: Users },
+    { name: isArabic ? "الأطباء" : "Doctors", href: "/doctors", icon: UserCheck },
+    { name: isArabic ? "السجلات الطبية" : "Medical Records", href: "/medical-records", icon: FileText },
     ...(user?.role === "admin"
-      ? [{ name: "Institutions", href: "/institutions", icon: Building2 }]
+      ? [{ name: isArabic ? "المؤسسات" : "Institutions", href: "/institutions", icon: Building2 }]
       : []),
   ];
 
@@ -72,12 +74,9 @@ export default function DashboardLayout({ children }) {
       {/* Icon-only sidebar for small and medium screens */}
       <div className="fixed inset-y-0 left-0 z-50 w-16 bg-card border-r border-border lg:hidden">
         <div className="flex flex-col h-full">
-          {/* Logo area */}
           <div className="flex items-center justify-center h-16 border-b border-border">
             <Activity className="w-8 h-8 text-primary" />
           </div>
-
-          {/* Navigation */}
           <nav className="flex-1 px-2 py-4 space-y-2">
             {navigation.map((item) => {
               const IconComponent = item.icon;
@@ -97,13 +96,11 @@ export default function DashboardLayout({ children }) {
               );
             })}
           </nav>
-
-          {/* Logout button */}
           <div className="p-2 border-t border-border">
             <button
               onClick={handleLogout}
               className="flex items-center justify-center w-12 h-12 text-destructive hover:bg-destructive/10 rounded-md transition-colors"
-              title="Logout"
+              title={isArabic ? "تسجيل الخروج" : "Logout"}
             >
               <LogOut className="w-6 h-6" />
             </button>
@@ -118,6 +115,7 @@ export default function DashboardLayout({ children }) {
             navigation={navigation}
             pathname={pathname}
             handleLogout={handleLogout}
+            isArabic={isArabic} // <-- Pass down
           />
         </div>
       </div>
@@ -130,30 +128,39 @@ export default function DashboardLayout({ children }) {
             <div className="flex justify-between h-16">
               <div className="flex items-center">
                 <h1 className="text-xl font-semibold text-foreground">
-                  Medical CV System
+                  {isArabic ? "نظام السجلات الطبية" : "Your Secure Medical CV System"}
                 </h1>
               </div>
               <div className="flex items-center space-x-3">
                 <span className="text-sm text-muted-foreground">
-                  Welcome, {user?.name}
+                  {/* {isArabic ? `مرحبا، ${user?.name}` : `Welcome, ${user?.name}`} */}
                 </span>
+
+                {/* Theme toggle */}
                 <button
                   type="button"
                   onClick={toggleTheme}
                   aria-label="Toggle theme"
                   className="inline-flex items-center justify-center rounded-md border border-border p-2 text-muted-foreground hover:bg-accent/10"
                 >
-                  {isDark ? (
-                    <Sun className="w-4 h-4" />
-                  ) : (
-                    <Moon className="w-4 h-4" />
-                  )}
+                  {isDark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
                 </button>
+
+                {/* Language toggle */}
+                <button
+                  type="button"
+                  onClick={toggleLanguage}
+                  className="inline-flex items-center justify-center rounded-md border border-border p-2 text-muted-foreground hover:bg-accent/10"
+                >
+                  {isArabic ? "English" : "العربية"}
+                </button>
+
+                {/* Logout for small screens */}
                 <button
                   onClick={handleLogout}
-                  className="bg-destructive text-white px-4 py-2 rounded-md text-sm hover:bg-destructive/90 lg:hidden"
+                  className="bg-destructive text-white px-4 py-2 rounded-md text-sm lg:hidden hover:bg-destructive/90"
                 >
-                  Logout
+                  {isArabic ? "تسجيل الخروج" : "Logout"}
                 </button>
               </div>
             </div>
@@ -163,9 +170,7 @@ export default function DashboardLayout({ children }) {
         {/* Page content */}
         <main className="flex-1">
           <div className="py-6">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              {children}
-            </div>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">{children}</div>
           </div>
         </main>
       </div>
@@ -173,11 +178,11 @@ export default function DashboardLayout({ children }) {
   );
 }
 
-function SidebarContent({ navigation, pathname, handleLogout }) {
+function SidebarContent({ navigation, pathname, handleLogout, isArabic }) {
   return (
     <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
       <div className="flex items-center flex-shrink-0 px-4">
-        <h2 className="text-lg font-semibold text-foreground">Medical CV</h2>
+        <h2 className="text-lg font-semibold text-foreground">MediLink</h2>
       </div>
       <nav className="mt-5 flex-1 px-2 space-y-1">
         {navigation.map((item) => {
@@ -205,7 +210,7 @@ function SidebarContent({ navigation, pathname, handleLogout }) {
           className="w-full flex items-center px-2 py-2 text-sm font-medium text-destructive hover:bg-destructive/10 rounded-md"
         >
           <LogOut className="w-5 h-5 mr-3" />
-          Logout
+          {isArabic ? "تسجيل الخروج" : "Logout"}
         </button>
       </div>
     </div>
