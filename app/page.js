@@ -1,124 +1,115 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Activity, Heart, Shield, Users, FileText, Clock } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Footer from "./components/footer";
 
 export default function HomePage() {
   const router = useRouter();
+  const [isArabic, setIsArabic] = useState(false);
 
   const handleLogin = () => {
     router.push("/login");
   };
 
+  const toggleLanguage = () => {
+    setIsArabic(!isArabic);
+  };
+
   const features = [
     {
-      icon: <Shield className="h-6 w-6 text-primary" />,
-      title: "Secure Records",
-      description:
-        "Your medical data is protected with enterprise-grade security",
+      icon: <Shield className="h-8 w-8 mx-auto mb-4 text-[#00368c]" />,
+      title: isArabic ? "سجلات آمنة" : "Secure Records",
+      description: isArabic
+        ? "بياناتك الطبية محمية بأمان على مستوى المؤسسات"
+        : "Your medical data is protected with enterprise-grade security",
     },
     {
-      icon: <Users className="h-6 w-6 text-primary" />,
-      title: "Patient Management",
-      description: "Efficiently manage and track patient information",
+      icon: <Users className="h-8 w-8 mx-auto mb-4 text-[#00368c]" />,
+      title: isArabic ? "إدارة المرضى" : "Patient Management",
+      description: isArabic
+        ? "إدارة ومتابعة معلومات المرضى بكفاءة"
+        : "Efficiently manage and track patient information",
     },
     {
-      icon: <FileText className="h-6 w-6 text-primary" />,
-      title: "Digital Records",
-      description: "Convert paper records into organized digital files",
+      icon: <FileText className="h-8 w-8 mx-auto mb-4 text-[#00368c]" />,
+      title: isArabic ? "سجلات رقمية" : "Digital Records",
+      description: isArabic
+        ? "تحويل السجلات الورقية إلى ملفات رقمية منظمة"
+        : "Convert paper records into organized digital files",
     },
     {
-      icon: <Clock className="h-6 w-6 text-primary" />,
-      title: "Quick Access",
-      description: "Instant access to medical history and records",
+      icon: <Clock className="h-8 w-8 mx-auto mb-4 text-[#00368c]" />,
+      title: isArabic ? "الوصول السريع" : "Quick Access",
+      description: isArabic
+        ? "الوصول الفوري لتاريخك الطبي والسجلات"
+        : "Instant access to medical history and records",
+    },
+    {
+      icon: <Activity className="h-8 w-8 mx-auto mb-4 text-[#00368c]" />,
+      title: isArabic ? "متابعة الصحة" : "Track Health",
+      description: isArabic
+        ? "مراقبة تاريخك الطبي والبقاء على اطلاع"
+        : "Monitor your medical history and stay updated",
+    },
+    {
+      icon: <Heart className="h-8 w-8 mx-auto mb-4 text-[#00368c]" />,
+      title: isArabic ? "رعاية شخصية" : "Personal Care",
+      description: isArabic
+        ? "كل سجلاتك منظمة لتقديم رعاية أفضل"
+        : "All your records are organized for better care",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <div className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-accent/10 z-0" />
+    <div
+      className={`flex flex-col min-h-screen ${
+        isArabic ? "text-right" : "text-left"
+      } bg-[#efefef] text-[#342520]`}
+      dir={isArabic ? "rtl" : "ltr"} // sets page direction
+    >
+      {/* Hero Section with #9ebdb3 gradient */}
+      <section className="relative py-28 text-center bg-gradient-to-br from-[#9ebdb3] via-[#4b7bc6]/70 to-[#00368c]/20 rounded-b-3xl">
+        {/* Language Toggle */}
+        <button
+          onClick={toggleLanguage}
+          className="absolute top-6 right-6 px-4 py-2 bg-[#00368c] text-white font-semibold rounded-full shadow hover:bg-[#4b7bc6] transition-all duration-300"
+        >
+          {isArabic ? "English" : "العربية"}
+        </button>
 
-        <div className="container mx-auto px-4">
-          <div className="relative z-10 py-20 md:py-32">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              <div className="space-y-8 animate-fade-in-up">
-                <div className="flex items-center space-x-3 animate-slide-in-left">
-                  <div className="p-3 bg-primary/10 rounded-xl">
-                    <Activity className="h-8 w-8 text-primary" />
-                  </div>
-                  <Heart className="h-8 w-8 text-accent animate-pulse" />
-                </div>
-
-                <div className="space-y-6">
-                  <h1 className="text-5xl md:text-6xl font-bold">
-                    <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                      MedicalCV
-                    </span>
-                  </h1>
-                  <p className="text-xl md:text-2xl text-muted-foreground max-w-xl leading-relaxed">
-                    Transform your medical practice with our comprehensive
-                    digital health records management system
-                  </p>
-                </div>
-
-                <div className="flex space-x-4">
-                  <Button
-                    size="lg"
-                    onClick={handleLogin}
-                    className="bg-primary hover:bg-accent transition-all duration-300 text-black hover:text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl"
-                  >
-                    Get Started
-                  </Button>
-                </div>
-              </div>
-
-              <div className="hidden md:block relative">
-                <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full filter blur-3xl animate-pulse"></div>
-                <img
-                  src="/health-hero.png"
-                  alt="Medical Healthcare Illustration"
-                  className="relative w-full max-w-lg mx-auto transform hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-            </div>
-          </div>
+        <div className="max-w-3xl mx-auto space-y-6">
+          <h1 className="text-5xl font-bold text-[#efefef]">MediLink</h1>
+          <p className="text-xl text-[#00368c]/90">
+            {isArabic
+              ? "حوّل ممارستك الطبية باستخدام نظامنا الشامل للسجلات الصحية الرقمية"
+              : "Transform your medical practice with our comprehensive digital health records system"}
+          </p>
+          <button
+            onClick={handleLogin}
+            className="mt-6 px-10 py-4 bg-white text-[#00368c] font-semibold rounded-full shadow-lg hover:bg-[#00368c] hover:text-white transition-all duration-300"
+          >
+            {isArabic ? "ابدأ الآن" : "Get Started"}
+          </button>
         </div>
-      </div>
+      </section>
 
       {/* Features Section */}
-      <div className="bg-card py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              Why Choose MedicalCV?
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Experience the future of medical record management with our
-              comprehensive solution
-            </p>
+      <section className="py-20 px-8 max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 text-center">
+        {features.map((feature, index) => (
+          <div
+            key={index}
+            className="bg-[#d2e5df] rounded-2xl p-8 shadow-md hover:shadow-lg transition-transform transform hover:-translate-y-1"
+          >
+            {feature.icon}
+            <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+            <p className="text-[#342520]/80">{feature.description}</p>
           </div>
+        ))}
+      </section>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-background p-6 rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
-              >
-                <div className="p-3 bg-primary/10 rounded-lg inline-block mb-4">
-                  {feature.icon}
-                </div>
-                <h3 className="text-xl font-semibold text-foreground mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      {/* Footer */}
+      <Footer />
     </div>
   );
 }

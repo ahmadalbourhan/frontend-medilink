@@ -6,32 +6,6 @@ import { useEffect, useState } from "react";
 import DashboardLayout from "../components/DashboardLayout";
 import apiClient from "../lib/api";
 
-/**
- * WHY IS TOTAL PATIENT STILL 0?
- *
- * The main reason is likely the way the code is trying to extract the total patient count
- * from the response of apiClient.getPatients. The code currently does:
- *
- *   const totalPatients = p.total || p.data?.total || (Array.isArray(p) ? p.length : 0);
- *
- * But from the context in patients/page.js, the API response for patients is probably:
- *   { data: [...], total: number, pagination: { ... } }
- * or
- *   { data: { patients: [...], total: number, pagination: { ... } } }
- *
- * To be robust, we should check for:
- *   - p.total
- *   - p.data?.total
- *   - p.pagination?.totalItems
- *   - p.data?.pagination?.totalItems
- *   - p.data?.patients?.length (if paginated)
- *   - p.data?.length (if not paginated)
- *
- * Also, make sure the API is returning the correct institution's patients (institutionId param).
- *
- * Let's log the response for debugging and improve the extraction logic.
- */
-
 export default function Dashboard() {
   const { user, loading } = useAuth();
   const router = useRouter();
