@@ -16,6 +16,7 @@ export default function Dashboard() {
     totalInstitutions: 0,
     totalUsers: 0,
   });
+  const { isArabic } = useLanguage();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -177,8 +178,12 @@ export default function Dashboard() {
     <DashboardLayout>
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-semibold text-foreground">Dashboard</h1>
-          <p className="text-muted-foreground">Welcome back, {user.name}</p>
+          <h1 className="text-2xl font-semibold text-foreground">
+            {isArabic ? "لوحة القيادة" : "Dashboard"}
+          </h1>
+          <p className="text-muted-foreground">
+            {isArabic ? "مرحبًا بعودتك" : `Welcome back, ${user.name}`}
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

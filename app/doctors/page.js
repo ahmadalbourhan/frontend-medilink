@@ -6,10 +6,13 @@ import { useRouter } from "next/navigation";
 import DashboardLayout from "../components/DashboardLayout";
 import apiClient from "../lib/api";
 import DangerConfirmModal from "../components/DangerConfirmModal";
+import TranslateButton from "../components/TranslateButton";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function Doctors() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { isArabic } = useLanguage();
   const [doctors, setDoctors] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredDoctors, setFilteredDoctors] = useState([]);
@@ -157,16 +160,20 @@ export default function Doctors() {
       <div className="space-y-6">
         <div className="flex justify-between items-center">
           <div>
-            <h1 className="text-2xl font-semibold text-foreground">Doctors</h1>
+            <h1 className="text-2xl font-semibold text-foreground">
+              {isArabic ? "الأطباء" : "Doctors"}
+            </h1>
             <p className="text-muted-foreground">
-              Manage doctor profiles and information
+              {isArabic
+                ? "إدارة ملفات ومعلومات الأطباء"
+                : "Manage doctor profiles and information"}
             </p>
           </div>
           <button
             onClick={handleCreate}
             className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
           >
-            Add New Doctor
+            {isArabic ? "إضافة طبيب جديد" : "Add New Doctor"}
           </button>
         </div>
 
@@ -176,7 +183,11 @@ export default function Doctors() {
               <div className="flex-1 w-full">
                 <input
                   type="text"
-                  placeholder="Search doctors by name, email, license, or specialization..."
+                  placeholder={
+                    isArabic
+                      ? "ابحث عن الأطباء بالاسم أو البريد الإلكتروني أو الترخيص أو التخصص..."
+                      : "Search doctors by name, email, license, or specialization..."
+                  }
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
@@ -188,7 +199,9 @@ export default function Doctors() {
                   onChange={(e) => setSpecializationFilter(e.target.value)}
                   className="px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 >
-                  <option value="all">All Specializations</option>
+                  <option value="all">
+                    {isArabic ? "جميع التخصصات" : "All Specializations"}
+                  </option>
                   {uniqueSpecializations.map((spec) => (
                     <option key={spec} value={spec}>
                       {spec}
@@ -204,10 +217,10 @@ export default function Doctors() {
               <thead className="bg-muted">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Doctor
+                    {isArabic ? "الطبيب" : "Doctor"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Specialization
+                    {isArabic ? "التخصص" : "Specialization"}
                   </th>
                   {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     License Number
@@ -216,10 +229,10 @@ export default function Doctors() {
                     Contact
                   </th> */}
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Institutions
+                    {isArabic ? "المؤسسات" : "Institutions"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Actions
+                    {isArabic ? "الإجراءات" : "Actions"}
                   </th>
                 </tr>
               </thead>
@@ -260,19 +273,19 @@ export default function Doctors() {
                         onClick={() => handleView(doctor)}
                         className="text-primary hover:text-primary/80 mr-4"
                       >
-                        View
+                        {isArabic ? "عرض" : "View"}
                       </button>
                       <button
                         onClick={() => handleEdit(doctor)}
                         className="text-accent hover:text-accent/80 mr-4"
                       >
-                        Edit
+                        {isArabic ? "تعديل" : "Edit"}
                       </button>
                       <button
                         onClick={() => handleDelete(doctor)}
                         className="text-destructive hover:text-destructive/80"
                       >
-                        Delete
+                        {isArabic ? "حذف" : "Delete"}
                       </button>
                     </td>
                   </tr>
@@ -284,7 +297,9 @@ export default function Doctors() {
           {filteredDoctors.length === 0 && (
             <div className="text-center py-12">
               <p className="text-muted-foreground">
-                No doctors found matching your criteria.
+                {isArabic
+                  ? "لا توجد أطباء تطابق معايير البحث الخاصة بك."
+                  : "No doctors found matching your criteria."}
               </p>
             </div>
           )}
@@ -295,7 +310,7 @@ export default function Doctors() {
         <ViewDoctorModal
           doctor={selectedDoctor}
           onClose={() => setShowViewModal(false)}
-          getInstitutionNames={getInstitutionNames}
+          getInstitutionNames={getInstitutionNames} // <-- Pass this prop
         />
       )}
 
@@ -318,8 +333,10 @@ export default function Doctors() {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={confirmDelete}
-        title="Delete Doctor"
-        message="Are you sure you want to delete this doctor? This will permanently remove their profile and all associated data."
+        title={isArabic ? "حذف الطبيب" : "Delete Doctor"}
+        message={isArabic
+          ? "هل أنت متأكد أنك تريد حذف هذا الطبيب؟ سيؤدي ذلك إلى إزالة ملفه الشخصي وجميع البيانات المرتبطة به بشكل دائم."
+          : "Are you sure you want to delete this doctor? This will permanently remove their profile and all associated data."}
         itemName={doctorToDelete?.name || ""}
       />
     </DashboardLayout>
@@ -327,12 +344,14 @@ export default function Doctors() {
 }
 
 function ViewDoctorModal({ doctor, onClose, getInstitutionNames }) {
+  const { isArabic } = useLanguage();
+
   return (
     <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-foreground">
-            Doctor Details
+            {doctor.name}
           </h3>
           <button
             onClick={onClose}
@@ -358,25 +377,25 @@ function ViewDoctorModal({ doctor, onClose, getInstitutionNames }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Name
+                {isArabic ? "الاسم" : "Name"}
               </label>
               <p className="mt-1 text-sm text-foreground">{doctor.name}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Email
+                {isArabic ? "البريد الإلكتروني" : "Email"}
               </label>
               <p className="mt-1 text-sm text-foreground">{doctor.email}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Phone
+                {isArabic ? "الهاتف" : "Phone"}
               </label>
               <p className="mt-1 text-sm text-foreground">{doctor.phone}</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                License Number
+                {isArabic ? "رقم الترخيص" : "License Number"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {doctor.licenseNumber}
@@ -384,7 +403,7 @@ function ViewDoctorModal({ doctor, onClose, getInstitutionNames }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Specialization
+                {isArabic ? "التخصص" : "Specialization"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {doctor.specialization}
@@ -392,7 +411,7 @@ function ViewDoctorModal({ doctor, onClose, getInstitutionNames }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Date of Birth
+                {isArabic ? "تاريخ الميلاد" : "Date of Birth"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {new Date(doctor.dateOfBirth).toLocaleDateString()}
@@ -401,13 +420,13 @@ function ViewDoctorModal({ doctor, onClose, getInstitutionNames }) {
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Address
+              {isArabic ? "العنوان" : "Address"}
             </label>
             <p className="mt-1 text-sm text-foreground">{doctor.address}</p>
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Institutions
+              {isArabic ? "المؤسسات" : "Institutions"}
             </label>
             <p className="mt-1 text-sm text-foreground">
               {getInstitutionNames(doctor.institutionIds)}
@@ -420,7 +439,7 @@ function ViewDoctorModal({ doctor, onClose, getInstitutionNames }) {
             onClick={onClose}
             className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
           >
-            Close
+            {isArabic ? "إغلاق" : "Close"}
           </button>
         </div>
       </div>
@@ -429,6 +448,7 @@ function ViewDoctorModal({ doctor, onClose, getInstitutionNames }) {
 }
 
 function EditDoctorModal({ doctor, onClose, onSave }) {
+  const { isArabic } = useLanguage();
   const [formData, setFormData] = useState({
     name: doctor.name,
     email: doctor.email,
@@ -452,7 +472,9 @@ function EditDoctorModal({ doctor, onClose, onSave }) {
     <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-foreground">Edit Doctor</h3>
+          <h3 className="text-lg font-medium text-foreground">
+            {isArabic ? "تعديل بيانات الطبيب" : "Edit Doctor"}
+          </h3>
           <button
             onClick={onClose}
             className="text-muted-foreground hover:text-foreground"
@@ -477,7 +499,7 @@ function EditDoctorModal({ doctor, onClose, onSave }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Name
+                {isArabic ? "الاسم" : "Name"}
               </label>
               <input
                 type="text"
@@ -490,7 +512,7 @@ function EditDoctorModal({ doctor, onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Email
+                {isArabic ? "البريد الإلكتروني" : "Email"}
               </label>
               <input
                 type="email"
@@ -503,7 +525,7 @@ function EditDoctorModal({ doctor, onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Phone
+                {isArabic ? "الهاتف" : "Phone"}
               </label>
               <input
                 type="tel"
@@ -516,7 +538,7 @@ function EditDoctorModal({ doctor, onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                License Number
+                {isArabic ? "رقم الترخيص" : "License Number"}
               </label>
               <input
                 type="text"
@@ -529,7 +551,7 @@ function EditDoctorModal({ doctor, onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Specialization
+                {isArabic ? "التخصص" : "Specialization"}
               </label>
               <input
                 type="text"
@@ -542,7 +564,7 @@ function EditDoctorModal({ doctor, onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Date of Birth
+                {isArabic ? "تاريخ الميلاد" : "Date of Birth"}
               </label>
               <input
                 type="date"
@@ -556,7 +578,7 @@ function EditDoctorModal({ doctor, onClose, onSave }) {
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Address
+              {isArabic ? "العنوان" : "Address"}
             </label>
             <textarea
               name="address"
@@ -574,13 +596,13 @@ function EditDoctorModal({ doctor, onClose, onSave }) {
               onClick={onClose}
               className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
             >
-              Cancel
+              {isArabic ? "إلغاء" : "Cancel"}
             </button>
             <button
               type="submit"
               className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
             >
-              Save Changes
+              {isArabic ? "حفظ التغييرات" : "Save Changes"}
             </button>
           </div>
         </form>
@@ -590,6 +612,7 @@ function EditDoctorModal({ doctor, onClose, onSave }) {
 }
 
 function CreateDoctorModal({ onClose, onSave }) {
+  const { isArabic } = useLanguage();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -619,7 +642,7 @@ function CreateDoctorModal({ onClose, onSave }) {
       <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-foreground">
-            Add New Doctor
+            {isArabic ? "إضافة طبيب جديد" : "Add New Doctor"}
           </h3>
           <button
             onClick={onClose}
@@ -645,7 +668,7 @@ function CreateDoctorModal({ onClose, onSave }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Name
+                {isArabic ? "الاسم" : "Name"}
               </label>
               <input
                 type="text"
@@ -658,7 +681,7 @@ function CreateDoctorModal({ onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Email
+                {isArabic ? "البريد الإلكتروني" : "Email"}
               </label>
               <input
                 type="email"
@@ -671,7 +694,7 @@ function CreateDoctorModal({ onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Phone
+                {isArabic ? "الهاتف" : "Phone"}
               </label>
               <input
                 type="tel"
@@ -684,7 +707,7 @@ function CreateDoctorModal({ onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                License Number
+                {isArabic ? "رقم الترخيص" : "License Number"}
               </label>
               <input
                 type="text"
@@ -697,7 +720,7 @@ function CreateDoctorModal({ onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Specialization
+                {isArabic ? "التخصص" : "Specialization"}
               </label>
               <input
                 type="text"
@@ -710,7 +733,7 @@ function CreateDoctorModal({ onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Date of Birth
+                {isArabic ? "تاريخ الميلاد" : "Date of Birth"}
               </label>
               <input
                 type="date"
@@ -724,7 +747,7 @@ function CreateDoctorModal({ onClose, onSave }) {
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Address
+              {isArabic ? "العنوان" : "Address"}
             </label>
             <textarea
               name="address"
@@ -742,13 +765,13 @@ function CreateDoctorModal({ onClose, onSave }) {
               onClick={onClose}
               className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
             >
-              Cancel
+              {isArabic ? "إلغاء" : "Cancel"}
             </button>
             <button
               type="submit"
               className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
             >
-              Add Doctor
+              {isArabic ? "إضافة طبيب" : "Add Doctor"}
             </button>
           </div>
         </form>

@@ -7,10 +7,13 @@ import { Siren } from "lucide-react";
 import DashboardLayout from "../components/DashboardLayout";
 import apiClient from "../lib/api";
 import DangerConfirmModal from "../components/DangerConfirmModal";
+import TranslateButton from "../components/TranslateButton";
+import { useLanguage } from "../contexts/LanguageContext";
 
 export default function MedicalRecords() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { isArabic } = useLanguage();
   const [records, setRecords] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredRecords, setFilteredRecords] = useState([]);
@@ -182,17 +185,19 @@ export default function MedicalRecords() {
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-2xl font-semibold text-foreground">
-              Medical Records
+              {isArabic ? "السجلات الطبية" : "Medical Records"}
             </h1>
             <p className="text-muted-foreground">
-              View and manage patient medical records
+              {isArabic
+                ? "عرض وإدارة السجلات الطبية للمرضى"
+                : "View and manage patient medical records"}
             </p>
           </div>
           <button
             onClick={handleCreate}
             className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
           >
-            Add New Record
+            {isArabic ? "إضافة سجل جديد" : "Add New Record"}
           </button>
         </div>
 
@@ -202,7 +207,11 @@ export default function MedicalRecords() {
               <div className="flex-1 w-full">
                 <input
                   type="text"
-                  placeholder="Search by patient name, ID, doctor, or diagnosis..."
+                  placeholder={
+                    isArabic
+                      ? "ابحث باسم المريض أو الهوية أو الطبيب أو التشخيص..."
+                      : "Search by patient name, ID, doctor, or diagnosis..."
+                  }
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
@@ -214,13 +223,27 @@ export default function MedicalRecords() {
                   onChange={(e) => setFilterType(e.target.value)}
                   className="px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 >
-                  <option value="all">All Types</option>
-                  <option value="consultation">Consultation</option>
-                  <option value="emergency">Emergency</option>
-                  <option value="follow-up">Follow-up</option>
-                  <option value="surgery">Surgery</option>
-                  <option value="lab-test">Lab Test</option>
-                  <option value="immunization">Immunization</option>
+                  <option value="all">
+                    {isArabic ? "جميع الأنواع" : "All Types"}
+                  </option>
+                  <option value="consultation">
+                    {isArabic ? "استشارة" : "Consultation"}
+                  </option>
+                  <option value="emergency">
+                    {isArabic ? "حالة طارئة" : "Emergency"}
+                  </option>
+                  <option value="follow-up">
+                    {isArabic ? "متابعة" : "Follow-up"}
+                  </option>
+                  <option value="surgery">
+                    {isArabic ? "جراحة" : "Surgery"}
+                  </option>
+                  <option value="lab-test">
+                    {isArabic ? "فحص مختبري" : "Lab Test"}
+                  </option>
+                  <option value="immunization">
+                    {isArabic ? "تحصين" : "Immunization"}
+                  </option>
                 </select>
               </div>
             </div>
@@ -231,22 +254,22 @@ export default function MedicalRecords() {
               <thead className="bg-muted">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Patient
+                    {isArabic ? "المريض" : "Patient"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Doctor
+                    {isArabic ? "الطبيب" : "Doctor"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Visit Type
+                    {isArabic ? "نوع الزيارة" : "Visit Type"}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Date
+                    {isArabic ? "التاريخ" : "Date"}
                   </th>
                   {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Diagnosis
                   </th> */}
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    Actions
+                    {isArabic ? "الإجراءات" : "Actions"}
                   </th>
                 </tr>
               </thead>
@@ -294,19 +317,19 @@ export default function MedicalRecords() {
                         onClick={() => handleView(record)}
                         className="text-primary hover:text-primary/80 mr-4"
                       >
-                        View
+                        {isArabic ? "عرض" : "View"}
                       </button>
                       <button
                         onClick={() => handleEdit(record)}
                         className="text-accent hover:text-accent/80 mr-4"
                       >
-                        Edit
+                        {isArabic ? "تعديل" : "Edit"}
                       </button>
                       <button
                         onClick={() => handleDelete(record)}
                         className="text-destructive hover:text-destructive/80"
                       >
-                        Delete
+                        {isArabic ? "حذف" : "Delete"}
                       </button>
                     </td>
                   </tr>
@@ -318,7 +341,9 @@ export default function MedicalRecords() {
           {filteredRecords.length === 0 && (
             <div className="text-center py-12">
               <p className="text-muted-foreground">
-                No medical records found matching your criteria.
+                {isArabic
+                  ? "لا توجد سجلات طبية تطابق معايير البحث الخاصة بك."
+                  : "No medical records found matching your criteria."}
               </p>
             </div>
           )}
@@ -329,8 +354,8 @@ export default function MedicalRecords() {
         <ViewRecordModal
           record={selectedRecord}
           onClose={() => setShowViewModal(false)}
-          getPatientName={getPatientName}
-          getDoctorName={getDoctorName}
+          getPatientName={getPatientName} // <-- Pass this
+          getDoctorName={getDoctorName}   // <-- Pass this if needed
         />
       )}
 
@@ -353,8 +378,10 @@ export default function MedicalRecords() {
         isOpen={showDeleteModal}
         onClose={() => setShowDeleteModal(false)}
         onConfirm={confirmDelete}
-        title="Delete Medical Record"
-        message="Are you sure you want to delete this medical record? This will permanently remove all clinical data and cannot be undone."
+        title={isArabic ? "حذف السجل الطبي" : "Delete Medical Record"}
+        message={isArabic
+          ? "هل أنت متأكد أنك تريد حذف هذا السجل الطبي؟ سيؤدي ذلك إلى إزالة جميع البيانات السريرية بشكل دائم ولا يمكن التراجع عنه."
+          : "Are you sure you want to delete this medical record? This will permanently remove all clinical data and cannot be undone."}
         itemName={`${getPatientName(recordToDelete?.patientId)} - ${
           recordToDelete?.visitInfo?.type || "Record"
         }`}
@@ -364,12 +391,14 @@ export default function MedicalRecords() {
 }
 
 function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
+  const { isArabic } = useLanguage();
+
   return (
     <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
       <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-foreground">
-            Medical Record Details
+            {isArabic ? "تفاصيل السجل الطبي" : "Medical Record Details"}
           </h3>
           <button
             onClick={onClose}
@@ -395,7 +424,7 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Patient
+                {isArabic ? "المريض" : "Patient"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {getPatientName(record.patientId)}
@@ -406,7 +435,7 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Doctor
+                {isArabic ? "الطبيب" : "Doctor"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {getDoctorName(record.doctorId)}
@@ -414,7 +443,7 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Visit Type
+                {isArabic ? "نوع الزيارة" : "Visit Type"}
               </label>
               <p className="mt-1 text-sm text-foreground capitalize">
                 {record.visitInfo.type}
@@ -422,7 +451,7 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Date
+                {isArabic ? "التاريخ" : "Date"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {new Date(record.visitInfo.date).toLocaleDateString()}
@@ -432,7 +461,7 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Symptoms
+              {isArabic ? "الأعراض" : "Symptoms"}
             </label>
             <p className="mt-1 text-sm text-foreground">
               {record.clinicalData.symptoms}
@@ -441,7 +470,7 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Diagnosis
+              {isArabic ? "التشخيص" : "Diagnosis"}
             </label>
             <p className="mt-1 text-sm text-foreground">
               {record.clinicalData.diagnosis}
@@ -450,7 +479,7 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Treatment
+              {isArabic ? "العلاج" : "Treatment"}
             </label>
             <p className="mt-1 text-sm text-foreground">
               {record.clinicalData.treatment}
@@ -459,7 +488,7 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Notes
+              {isArabic ? "ملاحظات" : "Notes"}
             </label>
             <p className="mt-1 text-sm text-foreground">
               {record.clinicalData.notes}
@@ -469,7 +498,7 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
           {record.prescriptions && record.prescriptions.length > 0 && (
             <div>
               <label className="block text-sm font-medium text-muted-foreground mb-2">
-                Prescriptions
+                {isArabic ? "الوصفات الطبية" : "Prescriptions"}
               </label>
               <div className="space-y-2">
                 {record.prescriptions.map((prescription, index) => (
@@ -491,17 +520,18 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
           {record.labResults && record.labResults.length > 0 && (
             <div>
               <label className="block text-sm font-medium text-muted-foreground mb-2">
-                Lab Results
+                {isArabic ? "نتائج الفحوصات المخبرية" : "Lab Results"}
               </label>
               <div className="space-y-2">
                 {record.labResults.map((result, index) => (
                   <div key={index} className="bg-muted p-3 rounded">
                     <p className="font-medium">{result.testName}</p>
                     <p className="text-sm text-muted-foreground">
-                      Result: {result.result}
+                      {isArabic ? "النتيجة: " : "Result: "} {result.result}
                     </p>
                     <p className="text-sm text-muted-foreground">
-                      Reference: {result.referenceRange}
+                      {isArabic ? "المرجع: " : "Reference: "}{" "}
+                      {result.referenceRange}
                     </p>
                     <span
                       className={`inline-block px-2 py-1 text-xs rounded ${
@@ -524,7 +554,7 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
             onClick={onClose}
             className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
           >
-            Close
+            {isArabic ? "إغلاق" : "Close"}
           </button>
         </div>
       </div>
@@ -533,6 +563,8 @@ function ViewRecordModal({ record, onClose, getPatientName, getDoctorName }) {
 }
 
 function EditRecordModal({ record, onClose, onSave }) {
+  const { isArabic } = useLanguage();
+
   const [formData, setFormData] = useState({
     symptoms: record.clinicalData.symptoms,
     diagnosis: record.clinicalData.diagnosis,
@@ -575,7 +607,7 @@ function EditRecordModal({ record, onClose, onSave }) {
       <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-foreground">
-            Edit Medical Record
+            {isArabic ? "تعديل السجل الطبي" : "Edit Medical Record"}
           </h3>
           <button
             onClick={onClose}
@@ -601,7 +633,7 @@ function EditRecordModal({ record, onClose, onSave }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Visit Type
+                {isArabic ? "نوع الزيارة" : "Visit Type"}
               </label>
               <select
                 name="visitType"
@@ -610,17 +642,29 @@ function EditRecordModal({ record, onClose, onSave }) {
                 className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               >
-                <option value="consultation">Consultation</option>
-                <option value="emergency">Emergency</option>
-                <option value="follow-up">Follow-up</option>
-                <option value="surgery">Surgery</option>
-                <option value="lab-test">Lab Test</option>
-                <option value="immunization">Immunization</option>
+                <option value="consultation">
+                  {isArabic ? "استشارة" : "Consultation"}
+                </option>
+                <option value="emergency">
+                  {isArabic ? "حالة طارئة" : "Emergency"}
+                </option>
+                <option value="follow-up">
+                  {isArabic ? "متابعة" : "Follow-up"}
+                </option>
+                <option value="surgery">
+                  {isArabic ? "جراحة" : "Surgery"}
+                </option>
+                <option value="lab-test">
+                  {isArabic ? "فحص مختبري" : "Lab Test"}
+                </option>
+                <option value="immunization">
+                  {isArabic ? "تحصين" : "Immunization"}
+                </option>
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Visit Date
+                {isArabic ? "تاريخ الزيارة" : "Visit Date"}
               </label>
               <input
                 type="date"
@@ -642,13 +686,13 @@ function EditRecordModal({ record, onClose, onSave }) {
               className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
             />
             <label className="ml-2 block text-sm text-foreground">
-              Emergency Visit
+              {isArabic ? "زيارة طارئة" : "Emergency Visit"}
             </label>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Symptoms
+              {isArabic ? "الأعراض" : "Symptoms"}
             </label>
             <textarea
               name="symptoms"
@@ -662,7 +706,7 @@ function EditRecordModal({ record, onClose, onSave }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Diagnosis
+              {isArabic ? "التشخيص" : "Diagnosis"}
             </label>
             <textarea
               name="diagnosis"
@@ -676,7 +720,7 @@ function EditRecordModal({ record, onClose, onSave }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Treatment
+              {isArabic ? "العلاج" : "Treatment"}
             </label>
             <textarea
               name="treatment"
@@ -690,7 +734,7 @@ function EditRecordModal({ record, onClose, onSave }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Notes
+              {isArabic ? "ملاحظات" : "Notes"}
             </label>
             <textarea
               name="notes"
@@ -707,13 +751,13 @@ function EditRecordModal({ record, onClose, onSave }) {
               onClick={onClose}
               className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
             >
-              Cancel
+              {isArabic ? "إلغاء" : "Cancel"}
             </button>
             <button
               type="submit"
               className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
             >
-              Save Changes
+              {isArabic ? "حفظ التغييرات" : "Save Changes"}
             </button>
           </div>
         </form>
@@ -723,6 +767,8 @@ function EditRecordModal({ record, onClose, onSave }) {
 }
 
 function CreateRecordModal({ onClose, onSave }) {
+  const { isArabic } = useLanguage();
+
   const [formData, setFormData] = useState({
     patientId: "",
     doctorId: "",
@@ -769,7 +815,7 @@ function CreateRecordModal({ onClose, onSave }) {
       <div className="relative top-10 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-2/3 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-medium text-foreground">
-            Add New Medical Record
+            {isArabic ? "إضافة سجل طبي جديد" : "Add New Medical Record"}
           </h3>
           <button
             onClick={onClose}
@@ -795,7 +841,7 @@ function CreateRecordModal({ onClose, onSave }) {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Patient ID
+                {isArabic ? "رقم المريض" : "Patient ID"}
               </label>
               <input
                 type="text"
@@ -809,7 +855,7 @@ function CreateRecordModal({ onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Doctor ID
+                {isArabic ? "رقم الطبيب" : "Doctor ID"}
               </label>
               <input
                 type="text"
@@ -823,7 +869,7 @@ function CreateRecordModal({ onClose, onSave }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Visit Type
+                {isArabic ? "نوع الزيارة" : "Visit Type"}
               </label>
               <select
                 name="visitType"
@@ -832,17 +878,29 @@ function CreateRecordModal({ onClose, onSave }) {
                 className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
                 required
               >
-                <option value="consultation">Consultation</option>
-                <option value="emergency">Emergency</option>
-                <option value="follow-up">Follow-up</option>
-                <option value="surgery">Surgery</option>
-                <option value="lab-test">Lab Test</option>
-                <option value="immunization">Immunization</option>
+                <option value="consultation">
+                  {isArabic ? "استشارة" : "Consultation"}
+                </option>
+                <option value="emergency">
+                  {isArabic ? "حالة طارئة" : "Emergency"}
+                </option>
+                <option value="follow-up">
+                  {isArabic ? "متابعة" : "Follow-up"}
+                </option>
+                <option value="surgery">
+                  {isArabic ? "جراحة" : "Surgery"}
+                </option>
+                <option value="lab-test">
+                  {isArabic ? "فحص مختبري" : "Lab Test"}
+                </option>
+                <option value="immunization">
+                  {isArabic ? "تحصين" : "Immunization"}
+                </option>
               </select>
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                Visit Date
+                {isArabic ? "تاريخ الزيارة" : "Visit Date"}
               </label>
               <input
                 type="date"
@@ -864,13 +922,13 @@ function CreateRecordModal({ onClose, onSave }) {
               className="h-4 w-4 text-primary focus:ring-primary border-border rounded"
             />
             <label className="ml-2 block text-sm text-foreground">
-              Emergency Visit
+              {isArabic ? "زيارة طارئة" : "Emergency Visit"}
             </label>
           </div>
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Symptoms
+              {isArabic ? "الأعراض" : "Symptoms"}
             </label>
             <textarea
               name="symptoms"
@@ -884,7 +942,7 @@ function CreateRecordModal({ onClose, onSave }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Diagnosis
+              {isArabic ? "التشخيص" : "Diagnosis"}
             </label>
             <textarea
               name="diagnosis"
@@ -898,7 +956,7 @@ function CreateRecordModal({ onClose, onSave }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Treatment
+              {isArabic ? "العلاج" : "Treatment"}
             </label>
             <textarea
               name="treatment"
@@ -912,7 +970,7 @@ function CreateRecordModal({ onClose, onSave }) {
 
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
-              Notes
+              {isArabic ? "ملاحظات" : "Notes"}
             </label>
             <textarea
               name="notes"
@@ -929,13 +987,13 @@ function CreateRecordModal({ onClose, onSave }) {
               onClick={onClose}
               className="bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/80"
             >
-              Cancel
+              {isArabic ? "إلغاء" : "Cancel"}
             </button>
             <button
               type="submit"
               className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
             >
-              Add Record
+              {isArabic ? "إضافة سجل" : "Add Record"}
             </button>
           </div>
         </form>
