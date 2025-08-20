@@ -56,16 +56,21 @@ export default function DashboardLayout({ children }) {
     router.push("/");
   };
 
-  const navigation = [
-    { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
-    { name: "Patients", href: "/patients", icon: Users },
-    { name: "Doctors", href: "/doctors", icon: UserCheck },
-    { name: "Medical Records", href: "/medical-records", icon: FileText },
-    // Only show institutions tab for admin users, not admin_institutions
-    ...(user?.role === "admin"
-      ? [{ name: "Institutions", href: "/institutions", icon: Building2 }]
-      : []),
-  ];
+  const navigation =
+    user?.role === "admin"
+      ? [
+          { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
+          { name: "Institutions", href: "/institutions", icon: Building2 },
+          { name: "Users", href: "/users", icon: Users },
+        ]
+      : user?.role === "admin_institutions"
+      ? [
+          { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
+          { name: "Patients", href: "/patients", icon: Users },
+          { name: "Doctors", href: "/doctors", icon: UserCheck },
+          { name: "Medical Records", href: "/medical-records", icon: FileText },
+        ]
+      : [];
 
   return (
     <div className="min-h-screen bg-background">

@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
-import { mockInstitutions } from "../lib/mockData";
+import apiClient from "../lib/api";
 
 const AuthContext = createContext();
 
@@ -21,33 +21,31 @@ export function AuthProvider({ children }) {
   }, []);
 
   const login = async (email, password) => {
-    const institution = mockInstitutions.find(
-      (inst) => inst.contact.email === email && inst.password === password
-    );
-
-    if (institution) {
-      const userData = {
-        id: institution._id,
-        name: institution.name,
-        email: institution.contact.email,
-        role: institution.role,
-        institutionId:
-          institution.role === "admin_institutions" ? institution._id : null,
-      };
-
-      localStorage.setItem("authToken", "mock-token");
-      localStorage.setItem("userData", JSON.stringify(userData));
-      setUser(userData);
+    try {
+      const response = await apiClient.login(email, password);
+      const { token, user: userPayload } = response.data || {};
+      if (!token || !userPayload) {
+        return { success: false, error: "Invalid response from server" };
+      }
+      localStorage.setItem("authToken", token);
+      localStorage.setItem("userData", JSON.stringify(userPayload));
+      setUser(userPayload);
       return { success: true };
+    } catch (error) {
+      return { success: false, error: error.message || "Login failed" };
     }
-
-    return { success: false, error: "Invalid credentials" };
   };
 
   const logout = async () => {
-    localStorage.removeItem("authToken");
-    localStorage.removeItem("userData");
-    setUser(null);
+    try {
+      await apiClient.logout();
+    } catch (e) {
+      // ignore
+    } finally {
+      localStorage.removeItem("authToken");
+      localStorage.removeItem("userData");
+      setUser(null);
+    }
   };
 
   return (

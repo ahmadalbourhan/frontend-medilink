@@ -4,12 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../../contexts/AuthContext";
 import { useRouter, useParams } from "next/navigation";
 import DashboardLayout from "../../../components/DashboardLayout";
-import {
-  mockPatients,
-  mockMedicalRecords,
-  mockDoctors,
-  mockInstitutions,
-} from "../../../lib/mockData";
+import apiClient from "../../../lib/api";
 import {
   ArrowLeft,
   Calendar,
@@ -40,42 +35,30 @@ export default function PatientRecords() {
   }, [user, loading, router]);
 
   useEffect(() => {
-    // Find the patient
-    const foundPatient = mockPatients.find((p) => p.patientId === patientId);
-    if (!foundPatient) {
-      router.push("/patients");
-      return;
-    }
+    const fetchData = async () => {
+      try {
+        // Patient details
+        const patRes = await apiClient.getPatient(patientId);
+        const pat = patRes.data || patRes;
+        setPatient(pat);
 
-    // Check if user has access to this patient
-    if (user?.role === "admin_institutions" && user?.institutionId) {
-      if (!foundPatient.institutionIds.includes(user.institutionId)) {
+        // Records for patient (public endpoint needs patient token; but we are admin here so use protected list + filter)
+        const params =
+          user?.role === "admin_institutions"
+            ? { patientId, institutionFilter: "own" }
+            : { patientId };
+        const recRes = await apiClient.getMedicalRecords(params);
+        const list = (recRes.data && recRes.data.data) || recRes.data || recRes;
+        const sorted = [...list].sort(
+          (a, b) => new Date(b.visitInfo.date) - new Date(a.visitInfo.date)
+        );
+        setRecords(sorted);
+        setFilteredRecords(sorted);
+      } catch (e) {
         router.push("/patients");
-        return;
       }
-    }
-
-    setPatient(foundPatient);
-
-    // Get all medical records for this patient
-    let patientRecords = mockMedicalRecords.filter(
-      (record) => record.patientId === patientId
-    );
-
-    // Filter by institution if user is admin_institutions
-    if (user?.role === "admin_institutions" && user?.institutionId) {
-      patientRecords = patientRecords.filter(
-        (record) => record.institutionId === user.institutionId
-      );
-    }
-
-    // Sort by date (newest first)
-    patientRecords.sort(
-      (a, b) => new Date(b.visitInfo.date) - new Date(a.visitInfo.date)
-    );
-
-    setRecords(patientRecords);
-    setFilteredRecords(patientRecords);
+    };
+    if (user && patientId) fetchData();
   }, [patientId, user, router]);
 
   if (loading || !user || !patient) {
@@ -111,13 +94,35 @@ export default function PatientRecords() {
   };
 
   const getDoctorName = (doctorId) => {
-    const doctor = mockDoctors.find((d) => d._id === doctorId);
-    return doctor ? doctor.name : "Unknown Doctor";
+    // If doctorId is already populated (an object), use its name
+    if (doctorId && typeof doctorId === "object" && doctorId.name) {
+      return doctorId.name;
+    }
+    // If it's just an ID string, search through records (fallback)
+    return (
+      records.find(
+        (r) => r.doctorId?._id === doctorId || r.doctorId === doctorId
+      )?.doctorId?.name || "Unknown Doctor"
+    );
   };
 
   const getInstitutionName = (institutionId) => {
-    const institution = mockInstitutions.find((i) => i._id === institutionId);
-    return institution ? institution.name : "Unknown Institution";
+    // If institutionId is already populated (an object), use its name
+    if (
+      institutionId &&
+      typeof institutionId === "object" &&
+      institutionId.name
+    ) {
+      return institutionId.name;
+    }
+    // If it's just an ID string, search through records (fallback)
+    return (
+      records.find(
+        (r) =>
+          r.institutionId?._id === institutionId ||
+          r.institutionId === institutionId
+      )?.institutionId?.name || "Unknown Institution"
+    );
   };
 
   const handleViewRecord = (record) => {

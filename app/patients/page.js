@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "../components/DashboardLayout";
-import { mockPatients } from "../lib/mockData";
+import apiClient from "../lib/api";
 import DangerConfirmModal from "../components/DangerConfirmModal";
 import { AlertTriangle, Baby } from "lucide-react";
 
@@ -28,16 +28,25 @@ export default function Patients() {
   }, [user, loading, router]);
 
   useEffect(() => {
-    let patientsToShow = mockPatients;
+    const fetchPatients = async () => {
+      try {
+        let params = {};
 
-    if (user?.role === "admin_institutions" && user?.institutionId) {
-      patientsToShow = mockPatients.filter((patient) =>
-        patient.institutionIds.includes(user.institutionId)
-      );
-    }
+        // If user is institution admin, filter by their institution
+        if (user?.role === "admin_institutions" && user?.institutionId) {
+          params.institutionId = user.institutionId;
+        }
 
-    setPatients(patientsToShow);
-    setFilteredPatients(patientsToShow);
+        const res = await apiClient.getPatients(params);
+        const list = res.data || res;
+        setPatients(list);
+        setFilteredPatients(list);
+      } catch (e) {
+        setPatients([]);
+        setFilteredPatients([]);
+      }
+    };
+    if (user) fetchPatients();
   }, [user]);
 
   useEffect(() => {
@@ -82,30 +91,39 @@ export default function Patients() {
     setShowEditModal(true);
   };
 
-  const handleSaveEdit = (updatedPatient) => {
-    const updatedPatients = patients.map((pat) =>
-      pat.patientId === updatedPatient.patientId ? updatedPatient : pat
-    );
-    setPatients(updatedPatients);
-    setShowEditModal(false);
-    setSelectedPatient(null);
+  const handleSaveEdit = async (updatedPatient) => {
+    try {
+      const res = await apiClient.updatePatient(
+        updatedPatient.patientId,
+        updatedPatient
+      );
+      const saved = res.data || res;
+      const updatedPatients = patients.map((pat) =>
+        pat.patientId === saved.patientId ? saved : pat
+      );
+      setPatients(updatedPatients);
+    } finally {
+      setShowEditModal(false);
+      setSelectedPatient(null);
+    }
   };
 
   const handleCreate = () => {
     setShowCreateModal(true);
   };
 
-  const handleSaveCreate = (newPatient) => {
-    const patientWithId = {
-      ...newPatient,
-      patientId: `PAT${Date.now()}`,
-      institutionIds:
-        user?.role === "admin_institutions"
-          ? [user.institutionId]
-          : newPatient.institutionIds || [],
-    };
-    setPatients([...patients, patientWithId]);
-    setShowCreateModal(false);
+  const handleSaveCreate = async (newPatient) => {
+    try {
+      const res = await apiClient.createPatient({
+        ...newPatient,
+        password: "password123",
+      });
+      const created = (res.data && res.data.data) || res.data || res;
+      const createdPatient = created.data || created; // handle different shapes
+      setPatients([...patients, createdPatient]);
+    } finally {
+      setShowCreateModal(false);
+    }
   };
 
   const handleDelete = (patient) => {
@@ -113,12 +131,15 @@ export default function Patients() {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    if (patientToDelete) {
+  const confirmDelete = async () => {
+    if (!patientToDelete) return;
+    try {
+      await apiClient.deletePatient(patientToDelete.patientId);
       const updatedPatients = patients.filter(
         (pat) => pat.patientId !== patientToDelete.patientId
       );
       setPatients(updatedPatients);
+    } finally {
       setPatientToDelete(null);
     }
   };

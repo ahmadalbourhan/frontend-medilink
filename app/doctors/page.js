@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "../components/DashboardLayout";
-import { mockDoctors, mockInstitutions } from "../lib/mockData";
+import apiClient from "../lib/api";
 import DangerConfirmModal from "../components/DangerConfirmModal";
 
 export default function Doctors() {
@@ -28,16 +28,25 @@ export default function Doctors() {
   }, [user, loading, router]);
 
   useEffect(() => {
-    let doctorsToShow = mockDoctors;
+    const fetchDoctors = async () => {
+      try {
+        let params = {};
 
-    if (user?.role === "admin_institutions" && user?.institutionId) {
-      doctorsToShow = mockDoctors.filter((doctor) =>
-        doctor.institutionIds.includes(user.institutionId)
-      );
-    }
+        // If user is institution admin, filter by their institution
+        if (user?.role === "admin_institutions" && user?.institutionId) {
+          params.institutionIds = user.institutionId;
+        }
 
-    setDoctors(doctorsToShow);
-    setFilteredDoctors(doctorsToShow);
+        const res = await apiClient.getDoctors(params);
+        const list = res.data || res;
+        setDoctors(list);
+        setFilteredDoctors(list);
+      } catch (e) {
+        setDoctors([]);
+        setFilteredDoctors([]);
+      }
+    };
+    if (user) fetchDoctors();
   }, [user]);
 
   useEffect(() => {
@@ -66,14 +75,12 @@ export default function Doctors() {
     );
   }
 
-  const getInstitutionNames = (institutionIds) => {
-    return institutionIds
-      .map((id) => {
-        const institution = mockInstitutions.find((inst) => inst._id === id);
-        return institution?.name || "Unknown Institution";
-      })
-      .join(", ");
-  };
+  const getInstitutionNames = (institutionIds) =>
+    Array.isArray(institutionIds)
+      ? institutionIds
+          .map((inst) => (typeof inst === "object" ? inst.name : inst))
+          .join(", ")
+      : "";
 
   const uniqueSpecializations = [
     ...new Set(doctors.map((doctor) => doctor.specialization)),
@@ -89,30 +96,42 @@ export default function Doctors() {
     setShowEditModal(true);
   };
 
-  const handleSaveEdit = (updatedDoctor) => {
-    const updatedDoctors = doctors.map((doc) =>
-      doc._id === updatedDoctor._id ? updatedDoctor : doc
-    );
-    setDoctors(updatedDoctors);
-    setShowEditModal(false);
-    setSelectedDoctor(null);
+  const handleSaveEdit = async (updatedDoctor) => {
+    try {
+      const res = await apiClient.updateDoctor(
+        updatedDoctor._id,
+        updatedDoctor
+      );
+      const saved = res.data || res;
+      const updatedDoctors = doctors.map((doc) =>
+        doc._id === saved._id ? saved : doc
+      );
+      setDoctors(updatedDoctors);
+    } finally {
+      setShowEditModal(false);
+      setSelectedDoctor(null);
+    }
   };
 
   const handleCreate = () => {
     setShowCreateModal(true);
   };
 
-  const handleSaveCreate = (newDoctor) => {
-    const doctorWithId = {
-      ...newDoctor,
-      _id: Date.now().toString(),
-      institutionIds:
-        user?.role === "admin_institutions"
-          ? [user.institutionId]
-          : newDoctor.institutionIds || [],
-    };
-    setDoctors([...doctors, doctorWithId]);
-    setShowCreateModal(false);
+  const handleSaveCreate = async (newDoctor) => {
+    try {
+      const payload = {
+        ...newDoctor,
+        institutionIds:
+          user?.role === "admin_institutions" && user?.institutionId
+            ? user.institutionId
+            : newDoctor.institutionIds,
+      };
+      const res = await apiClient.createDoctor(payload);
+      const created = res.data || res;
+      setDoctors([...doctors, created]);
+    } finally {
+      setShowCreateModal(false);
+    }
   };
 
   const handleDelete = (doctor) => {
@@ -120,12 +139,15 @@ export default function Doctors() {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    if (doctorToDelete) {
+  const confirmDelete = async () => {
+    if (!doctorToDelete) return;
+    try {
+      await apiClient.deleteDoctor(doctorToDelete._id);
       const updatedDoctors = doctors.filter(
         (doc) => doc._id !== doctorToDelete._id
       );
       setDoctors(updatedDoctors);
+    } finally {
       setDoctorToDelete(null);
     }
   };

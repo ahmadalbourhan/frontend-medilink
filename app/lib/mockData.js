@@ -1,21 +1,42 @@
 // Mock data that matches your Express backend structure
 
-export const mockInstitutions = [
+export const mockUsers = [
   {
-    _id: "inst_admin",
-    name: "System Administration",
-    type: "hospital", // could just be placeholder
-    contact: {
-      address: "System",
-      phone: "System",
-      email: "admin@medicalcv.com",
-    },
-    password: "admin", // ⚠️ plain for mock; hash in DB
+    _id: "admin001",
+    name: "System Administrator",
+    email: "admin@medicalcv.com",
+    password: "admin", // In real app, this would be hashed
     role: "admin",
-    services: [],
-    createdAt: "2024-01-01T00:00:00Z",
-    updatedAt: "2024-01-01T00:00:00Z",
+    permissions: [
+      "manage_patients",
+      "manage_doctors",
+      "manage_medical_records",
+      "manage_users",
+      "view_statistics",
+      "manage_institutions",
+      "manage_roles",
+      "cross_institution_access",
+      "emergency_override",
+    ],
   },
+  {
+    _id: "inst001",
+    name: "Dr. Sarah Johnson",
+    email: "sarah@cityhospital.com",
+    password: "password123",
+    role: "admin_institutions",
+    institutionId: "inst_001",
+    permissions: [
+      "manage_patients",
+      "manage_doctors",
+      "manage_medical_records",
+      "view_statistics",
+      "cross_institution_access",
+    ],
+  },
+];
+
+export const mockInstitutions = [
   {
     _id: "inst_001",
     name: "City General Hospital",
@@ -25,8 +46,6 @@ export const mockInstitutions = [
       phone: "+1-555-0123",
       email: "info@cityhospital.com",
     },
-    password: "password123",
-    role: "admin_institutions",
     services: [
       "Emergency Care",
       "Surgery",
@@ -46,8 +65,6 @@ export const mockInstitutions = [
       phone: "+1-555-0456",
       email: "contact@westsideclinic.com",
     },
-    password: "password123",
-    role: "admin_institutions",
     services: [
       "General Practice",
       "Immunizations",
@@ -66,8 +83,6 @@ export const mockInstitutions = [
       phone: "+1-555-0789",
       email: "info@childrenshc.com",
     },
-    password: "password123",
-    role: "admin_institutions",
     services: ["Pediatrics", "NICU", "Pediatric Surgery", "Child Psychology"],
     createdAt: "2024-02-01T10:00:00Z",
     updatedAt: "2024-02-01T10:00:00Z",

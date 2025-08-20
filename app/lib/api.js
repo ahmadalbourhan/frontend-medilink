@@ -51,8 +51,9 @@ class ApiClient {
   }
 
   // Patients
-  async getPatients() {
-    return this.request("/patients");
+  async getPatients(params) {
+    const query = params ? `?${new URLSearchParams(params).toString()}` : "";
+    return this.request(`/patients${query}`);
   }
 
   async getPatient(id) {
@@ -80,8 +81,9 @@ class ApiClient {
   }
 
   // Medical Records
-  async getMedicalRecords() {
-    return this.request("/medical-records");
+  async getMedicalRecords(params) {
+    const query = params ? `?${new URLSearchParams(params).toString()}` : "";
+    return this.request(`/medical-records${query}`);
   }
 
   async getMedicalRecord(id) {
@@ -107,8 +109,9 @@ class ApiClient {
   }
 
   // Doctors
-  async getDoctors() {
-    return this.request("/doctors");
+  async getDoctors(params) {
+    const query = params ? `?${new URLSearchParams(params).toString()}` : "";
+    return this.request(`/doctors${query}`);
   }
 
   async getDoctor(id) {
@@ -136,30 +139,61 @@ class ApiClient {
   }
 
   // Institutions (Admin only)
-  async getInstitutions() {
-    return this.request("/institutions");
+  async getInstitutions(params) {
+    const query = params ? `?${new URLSearchParams(params).toString()}` : "";
+    return this.request(`/admin/institutions${query}`);
   }
 
   async getInstitution(id) {
-    return this.request(`/institutions/${id}`);
+    return this.request(`/admin/institutions/${id}`);
   }
 
   async createInstitution(institutionData) {
-    return this.request("/institutions", {
+    return this.request("/admin/institutions", {
       method: "POST",
       body: JSON.stringify(institutionData),
     });
   }
 
   async updateInstitution(id, institutionData) {
-    return this.request(`/institutions/${id}`, {
+    return this.request(`/admin/institutions/${id}`, {
       method: "PUT",
       body: JSON.stringify(institutionData),
     });
   }
 
   async deleteInstitution(id) {
-    return this.request(`/institutions/${id}`, {
+    return this.request(`/admin/institutions/${id}`, {
+      method: "DELETE",
+    });
+  }
+
+  // Users (Admin only)
+  async getUsers(params) {
+    const query = params ? `?${new URLSearchParams(params).toString()}` : "";
+    return this.request(`/admin/users${query}`);
+  }
+
+  async getUser(id) {
+    return this.request(`/admin/users/${id}`);
+  }
+
+  async createUser(userData) {
+    return this.request("/admin/users", {
+      method: "POST",
+      body: JSON.stringify(userData),
+    });
+  }
+
+  async updateUser(id, userData) {
+    return this.request(`/admin/users/${id}`, {
+      method: "PUT",
+      body: JSON.stringify(userData),
+    });
+  }
+
+  async deleteUser(id) {
+    return this.request(`/admin/users/${id}`, {
       method: "DELETE",
     });
   }

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "../components/DashboardLayout";
-import { mockInstitutions } from "../lib/mockData";
+import apiClient from "../lib/api";
 import DangerConfirmModal from "../components/DangerConfirmModal";
 
 export default function Institutions() {
@@ -31,9 +31,19 @@ export default function Institutions() {
   }, [user, loading, router]);
 
   useEffect(() => {
-    setInstitutions(mockInstitutions);
-    setFilteredInstitutions(mockInstitutions);
-  }, []);
+    const fetchInstitutions = async () => {
+      try {
+        const res = await apiClient.getInstitutions();
+        const list = res.data || res;
+        setInstitutions(list);
+        setFilteredInstitutions(list);
+      } catch (e) {
+        setInstitutions([]);
+        setFilteredInstitutions([]);
+      }
+    };
+    if (user?.role === "admin") fetchInstitutions();
+  }, [user]);
 
   useEffect(() => {
     const filtered = institutions.filter((institution) => {
@@ -93,26 +103,31 @@ export default function Institutions() {
     setShowCreateModal(true);
   };
 
-  const handleSaveEdit = (updatedInstitution) => {
-    const updatedInstitutions = institutions.map((inst) =>
-      inst._id === updatedInstitution._id ? updatedInstitution : inst
-    );
-    setInstitutions(updatedInstitutions);
-    setShowEditModal(false);
-    setSelectedInstitution(null);
+  const handleSaveEdit = async (updatedInstitution) => {
+    try {
+      const res = await apiClient.updateInstitution(
+        updatedInstitution._id,
+        updatedInstitution
+      );
+      const saved = res.data || res;
+      const updatedInstitutions = institutions.map((inst) =>
+        inst._id === saved._id ? saved : inst
+      );
+      setInstitutions(updatedInstitutions);
+    } finally {
+      setShowEditModal(false);
+      setSelectedInstitution(null);
+    }
   };
 
-  const handleSaveCreate = (newInstitution) => {
-    const institutionWithId = {
-      ...newInstitution,
-      _id: Date.now().toString(),
-      password: newInstitution.password,
-      role: newInstitution.role || "admin_institutions",
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-    setInstitutions([...institutions, institutionWithId]);
-    setShowCreateModal(false);
+  const handleSaveCreate = async (newInstitution) => {
+    try {
+      const res = await apiClient.createInstitution(newInstitution);
+      const created = res.data || res;
+      setInstitutions([...institutions, created]);
+    } finally {
+      setShowCreateModal(false);
+    }
   };
 
   const handleDelete = (institution) => {
@@ -120,12 +135,15 @@ export default function Institutions() {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    if (institutionToDelete) {
+  const confirmDelete = async () => {
+    if (!institutionToDelete) return;
+    try {
+      await apiClient.deleteInstitution(institutionToDelete._id);
       const updatedInstitutions = institutions.filter(
         (inst) => inst._id !== institutionToDelete._id
       );
       setInstitutions(updatedInstitutions);
+    } finally {
       setInstitutionToDelete(null);
     }
   };
@@ -590,7 +608,6 @@ function CreateInstitutionModal({ onClose, onSave }) {
     email: "",
     address: "",
     services: "",
-    password: "",
     role: "admin_institutions",
   });
 
@@ -608,7 +625,6 @@ function CreateInstitutionModal({ onClose, onSave }) {
         .split(",")
         .map((s) => s.trim())
         .filter((s) => s),
-      password: formData.password,
       role: formData.role,
     };
     onSave(newInstitution);
@@ -758,23 +774,6 @@ function CreateInstitutionModal({ onClose, onSave }) {
                   <option value="admin">System Admin</option>
                   <option value="admin_institutions">Institution Admin</option>
                 </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-muted-foreground">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
-                  minLength={6}
-                  required
-                />
-                <p className="mt-1 text-sm text-muted-foreground">
-                  Minimum 6 characters
-                </p>
               </div>
             </div>
           </div>

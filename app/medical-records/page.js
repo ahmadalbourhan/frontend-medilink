@@ -5,7 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { Siren } from "lucide-react";
 import DashboardLayout from "../components/DashboardLayout";
-import { mockMedicalRecords, mockPatients, mockDoctors } from "../lib/mockData";
+import apiClient from "../lib/api";
 import DangerConfirmModal from "../components/DangerConfirmModal";
 
 export default function MedicalRecords() {
@@ -29,29 +29,36 @@ export default function MedicalRecords() {
   }, [user, loading, router]);
 
   useEffect(() => {
-    let recordsToShow = mockMedicalRecords;
+    const fetchRecords = async () => {
+      try {
+        let params = {};
 
-    if (user?.role === "admin_institutions" && user?.institutionId) {
-      recordsToShow = mockMedicalRecords.filter(
-        (record) => record.institutionId === user.institutionId
-      );
-    }
+        // If user is institution admin, filter by their institution
+        if (user?.role === "admin_institutions" && user?.institutionId) {
+          params.institutionFilter = "own";
+        }
 
-    setRecords(recordsToShow);
-    setFilteredRecords(recordsToShow);
+        const res = await apiClient.getMedicalRecords(params);
+        const list = (res.data && res.data.data) || res.data || res;
+        setRecords(list);
+        setFilteredRecords(list);
+      } catch (e) {
+        setRecords([]);
+        setFilteredRecords([]);
+      }
+    };
+    if (user) fetchRecords();
   }, [user]);
 
   useEffect(() => {
     const filtered = records.filter((record) => {
-      const patient = mockPatients.find(
-        (p) => p.patientId === record.patientId
-      );
-      const doctor = mockDoctors.find((d) => d._id === record.doctorId);
+      const patientName = record.patient?.name;
+      const doctorName = record.doctorId?.name || record.doctor?.name;
 
       const matchesSearch =
-        record.patientId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        patient?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doctor?.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        record.patientId?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        patientName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        doctorName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         record.clinicalData.diagnosis
           ?.toLowerCase()
           .includes(searchTerm.toLowerCase());
@@ -74,13 +81,28 @@ export default function MedicalRecords() {
   }
 
   const getPatientName = (patientId) => {
-    const patient = mockPatients.find((p) => p.patientId === patientId);
-    return patient?.name || "Unknown Patient";
+    // If patientId is already populated (an object), use its name
+    if (patientId && typeof patientId === "object" && patientId.name) {
+      return patientId.name;
+    }
+    // If it's just an ID string, search through records (fallback)
+    return (
+      records.find((r) => r.patientId === patientId)?.patient?.name ||
+      "Unknown Patient"
+    );
   };
 
   const getDoctorName = (doctorId) => {
-    const doctor = mockDoctors.find((d) => d._id === doctorId);
-    return doctor?.name || "Unknown Doctor";
+    // If doctorId is already populated (an object), use its name
+    if (doctorId && typeof doctorId === "object" && doctorId.name) {
+      return doctorId.name;
+    }
+    // If it's just an ID string, search through records (fallback)
+    return (
+      records.find(
+        (r) => r.doctorId?._id === doctorId || r.doctorId === doctorId
+      )?.doctorId?.name || "Unknown Doctor"
+    );
   };
 
   const getVisitTypeColor = (type) => {
@@ -105,30 +127,35 @@ export default function MedicalRecords() {
     setShowEditModal(true);
   };
 
-  const handleSaveEdit = (updatedRecord) => {
-    const updatedRecords = records.map((rec) =>
-      rec._id === updatedRecord._id ? updatedRecord : rec
-    );
-    setRecords(updatedRecords);
-    setShowEditModal(false);
-    setSelectedRecord(null);
+  const handleSaveEdit = async (updatedRecord) => {
+    try {
+      const res = await apiClient.updateMedicalRecord(
+        updatedRecord._id,
+        updatedRecord
+      );
+      const saved = res.data || res;
+      const updatedRecords = records.map((rec) =>
+        rec._id === saved._id ? saved : rec
+      );
+      setRecords(updatedRecords);
+    } finally {
+      setShowEditModal(false);
+      setSelectedRecord(null);
+    }
   };
 
   const handleCreate = () => {
     setShowCreateModal(true);
   };
 
-  const handleSaveCreate = (newRecord) => {
-    const recordWithId = {
-      ...newRecord,
-      _id: Date.now().toString(),
-      institutionId:
-        user?.role === "admin_institutions"
-          ? user.institutionId
-          : newRecord.institutionId,
-    };
-    setRecords([...records, recordWithId]);
-    setShowCreateModal(false);
+  const handleSaveCreate = async (newRecord) => {
+    try {
+      const res = await apiClient.createMedicalRecord(newRecord);
+      const created = res.data || res;
+      setRecords([...records, created]);
+    } finally {
+      setShowCreateModal(false);
+    }
   };
 
   const handleDelete = (record) => {
@@ -136,12 +163,15 @@ export default function MedicalRecords() {
     setShowDeleteModal(true);
   };
 
-  const confirmDelete = () => {
-    if (recordToDelete) {
+  const confirmDelete = async () => {
+    if (!recordToDelete) return;
+    try {
+      await apiClient.deleteMedicalRecord(recordToDelete._id);
       const updatedRecords = records.filter(
         (rec) => rec._id !== recordToDelete._id
       );
       setRecords(updatedRecords);
+    } finally {
       setRecordToDelete(null);
     }
   };
