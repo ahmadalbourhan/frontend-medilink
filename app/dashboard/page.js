@@ -4,6 +4,8 @@ import { useAuth } from "../contexts/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import DashboardLayout from "../components/DashboardLayout";
+import TranslateButton from "../components/TranslateButton";
+import { useLanguage } from "../contexts/LanguageContext";
 import apiClient from "../lib/api";
 
 export default function Dashboard() {
