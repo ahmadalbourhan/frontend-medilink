@@ -29,6 +29,11 @@ export default function MedicalRecords() {
     if (!loading && !user) {
       router.push("/");
     }
+
+    // Redirect doctors to patients page
+    if (!loading && user && user.role === "doctor") {
+      router.push("/patients");
+    }
   }, [user, loading, router]);
 
   useEffect(() => {
@@ -355,7 +360,7 @@ export default function MedicalRecords() {
           record={selectedRecord}
           onClose={() => setShowViewModal(false)}
           getPatientName={getPatientName} // <-- Pass this
-          getDoctorName={getDoctorName}   // <-- Pass this if needed
+          getDoctorName={getDoctorName} // <-- Pass this if needed
         />
       )}
 
@@ -379,9 +384,11 @@ export default function MedicalRecords() {
         onClose={() => setShowDeleteModal(false)}
         onConfirm={confirmDelete}
         title={isArabic ? "حذف السجل الطبي" : "Delete Medical Record"}
-        message={isArabic
-          ? "هل أنت متأكد أنك تريد حذف هذا السجل الطبي؟ سيؤدي ذلك إلى إزالة جميع البيانات السريرية بشكل دائم ولا يمكن التراجع عنه."
-          : "Are you sure you want to delete this medical record? This will permanently remove all clinical data and cannot be undone."}
+        message={
+          isArabic
+            ? "هل أنت متأكد أنك تريد حذف هذا السجل الطبي؟ سيؤدي ذلك إلى إزالة جميع البيانات السريرية بشكل دائم ولا يمكن التراجع عنه."
+            : "Are you sure you want to delete this medical record? This will permanently remove all clinical data and cannot be undone."
+        }
         itemName={`${getPatientName(recordToDelete?.patientId)} - ${
           recordToDelete?.visitInfo?.type || "Record"
         }`}

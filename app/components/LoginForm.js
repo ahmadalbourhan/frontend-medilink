@@ -20,7 +20,16 @@ export default function LoginForm() {
 
     if (result.success) {
       toast.success("Login successful!");
-      router.push("/dashboard");
+
+      // Get the current user from context to check role
+      const currentUser = JSON.parse(localStorage.getItem("userData"));
+
+      // Redirect based on user role
+      if (currentUser && currentUser.role === "doctor") {
+        router.push("/patients");
+      } else {
+        router.push("/dashboard");
+      }
     } else {
       toast.error(result.error || "Login failed");
     }

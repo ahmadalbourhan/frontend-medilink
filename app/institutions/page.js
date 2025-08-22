@@ -28,6 +28,12 @@ export default function Institutions() {
     if (!loading && !user) {
       router.push("/");
     }
+
+    // Redirect doctors to patients page
+    if (!loading && user && user.role === "doctor") {
+      router.push("/patients");
+    }
+
     if (!loading && user && user.role === "admin_institutions") {
       router.push("/dashboard");
     }

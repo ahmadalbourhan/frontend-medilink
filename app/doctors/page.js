@@ -28,6 +28,11 @@ export default function Doctors() {
     if (!loading && !user) {
       router.push("/");
     }
+
+    // Redirect doctors to patients page
+    if (!loading && user && user.role === "doctor") {
+      router.push("/patients");
+    }
   }, [user, loading, router]);
 
   useEffect(() => {
@@ -334,9 +339,11 @@ export default function Doctors() {
         onClose={() => setShowDeleteModal(false)}
         onConfirm={confirmDelete}
         title={isArabic ? "حذف الطبيب" : "Delete Doctor"}
-        message={isArabic
-          ? "هل أنت متأكد أنك تريد حذف هذا الطبيب؟ سيؤدي ذلك إلى إزالة ملفه الشخصي وجميع البيانات المرتبطة به بشكل دائم."
-          : "Are you sure you want to delete this doctor? This will permanently remove their profile and all associated data."}
+        message={
+          isArabic
+            ? "هل أنت متأكد أنك تريد حذف هذا الطبيب؟ سيؤدي ذلك إلى إزالة ملفه الشخصي وجميع البيانات المرتبطة به بشكل دائم."
+            : "Are you sure you want to delete this doctor? This will permanently remove their profile and all associated data."
+        }
         itemName={doctorToDelete?.name || ""}
       />
     </DashboardLayout>
@@ -350,9 +357,7 @@ function ViewDoctorModal({ doctor, onClose, getInstitutionNames }) {
     <div className="fixed inset-0 bg-foreground/20 backdrop-blur-sm overflow-y-auto h-full w-full z-50">
       <div className="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-card text-card-foreground">
         <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-foreground">
-            {doctor.name}
-          </h3>
+          <h3 className="text-lg font-medium text-foreground">{doctor.name}</h3>
           <button
             onClick={onClose}
             className="text-muted-foreground hover:text-foreground"

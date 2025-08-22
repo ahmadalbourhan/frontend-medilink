@@ -73,6 +73,8 @@ export default function DashboardLayout({ children }) {
           { name: "Doctors", href: "/doctors", icon: UserCheck },
           { name: "Medical Records", href: "/medical-records", icon: FileText },
         ]
+      : user?.role === "doctor"
+      ? [{ name: "Patients", href: "/patients", icon: Users }]
       : [];
 
   return (

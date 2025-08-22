@@ -85,11 +85,13 @@ export default function Patients() {
   };
 
   const handleView = (patient) => {
+    if (user?.role === "doctor") return;
     setSelectedPatient(patient);
     setShowViewModal(true);
   };
 
   const handleEdit = (patient) => {
+    if (user?.role === "doctor") return;
     setSelectedPatient(patient);
     setShowEditModal(true);
   };
@@ -112,6 +114,7 @@ export default function Patients() {
   };
 
   const handleCreate = () => {
+    if (user?.role === "doctor") return;
     setShowCreateModal(true);
   };
 
@@ -130,6 +133,7 @@ export default function Patients() {
   };
 
   const handleDelete = (patient) => {
+    if (user?.role === "doctor") return;
     setPatientToDelete(patient);
     setShowDeleteModal(true);
   };
@@ -161,12 +165,14 @@ export default function Patients() {
                 : "Manage patient records and information"}
             </p>
           </div>
-          <button
-            onClick={handleCreate}
-            className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
-          >
-            {isArabic ? "إضافة مريض جديد" : "Add New Patient"}
-          </button>
+          {user?.role !== "doctor" && (
+            <button
+              onClick={handleCreate}
+              className="bg-primary text-primary-foreground px-4 py-2 rounded-md hover:bg-primary/90"
+            >
+              {isArabic ? "إضافة مريض جديد" : "Add New Patient"}
+            </button>
+          )}
         </div>
 
         <div className="bg-card text-card-foreground shadow rounded-lg">
@@ -207,9 +213,11 @@ export default function Patients() {
                   <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                     {isArabic ? "جهة الاتصال" : "Contact"}
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
-                    {isArabic ? "الإجراءات" : "Actions"}
-                  </th>
+                  {user?.role !== "doctor" && (
+                    <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
+                      {isArabic ? "الإجراءات" : "Actions"}
+                    </th>
+                  )}
                 </tr>
               </thead>
               <tbody className="bg-card divide-y divide-border">
@@ -240,8 +248,8 @@ export default function Patients() {
                       {patient.patientId}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-foreground">
-                      {calculateAge(patient.dateOfBirth)} {isArabic ? "سنوات" : "years"},{" "}
-                      {patient.gender}
+                      {calculateAge(patient.dateOfBirth)}{" "}
+                      {isArabic ? "سنوات" : "years"}, {patient.gender}
                       {patient.isPregnant && (
                         <span className="ml-2 text-pink-600 inline-flex items-center">
                           <Baby className="w-4 h-4" />
@@ -259,35 +267,37 @@ export default function Patients() {
                         {patient.contact.email}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleView(patient);
-                        }}
-                        className="text-primary hover:text-primary/80 mr-4"
-                      >
-                        {isArabic ? "عرض" : "View"}
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleEdit(patient);
-                        }}
-                        className="text-accent hover:text-accent/80 mr-4"
-                      >
-                        {isArabic ? "تعديل" : "Edit"}
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(patient);
-                        }}
-                        className="text-destructive hover:text-destructive/80"
-                      >
-                        {isArabic ? "حذف" : "Delete"}
-                      </button>
-                    </td>
+                    {user?.role !== "doctor" && (
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleView(patient);
+                          }}
+                          className="text-primary hover:text-primary/80 mr-4"
+                        >
+                          {isArabic ? "عرض" : "View"}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleEdit(patient);
+                          }}
+                          className="text-accent hover:text-accent/80 mr-4"
+                        >
+                          {isArabic ? "تعديل" : "Edit"}
+                        </button>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDelete(patient);
+                          }}
+                          className="text-destructive hover:text-destructive/80"
+                        >
+                          {isArabic ? "حذف" : "Delete"}
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
@@ -306,14 +316,14 @@ export default function Patients() {
         </div>
       </div>
 
-      {showViewModal && selectedPatient && (
+      {showViewModal && selectedPatient && user?.role !== "doctor" && (
         <ViewPatientModal
           patient={selectedPatient}
           onClose={() => setShowViewModal(false)}
         />
       )}
 
-      {showEditModal && selectedPatient && (
+      {showEditModal && selectedPatient && user?.role !== "doctor" && (
         <EditPatientModal
           patient={selectedPatient}
           onClose={() => setShowEditModal(false)}
@@ -321,23 +331,27 @@ export default function Patients() {
         />
       )}
 
-      {showCreateModal && (
+      {showCreateModal && user?.role !== "doctor" && (
         <CreatePatientModal
           onClose={() => setShowCreateModal(false)}
           onSave={handleSaveCreate}
         />
       )}
 
-      <DangerConfirmModal
-        isOpen={showDeleteModal}
-        onClose={() => setShowDeleteModal(false)}
-        onConfirm={confirmDelete}
-        title={isArabic ? "حذف المريض" : "Delete Patient"}
-        message={isArabic
-          ? "هل أنت متأكد أنك تريد حذف هذا المريض؟ سيؤدي ذلك إلى إزالة جميع بيانات المريض وسجلاته الطبية بشكل دائم."
-          : "Are you sure you want to delete this patient? This will permanently remove all patient data and medical records."}
-        itemName={patientToDelete?.name || ""}
-      />
+      {user?.role !== "doctor" && (
+        <DangerConfirmModal
+          isOpen={showDeleteModal}
+          onClose={() => setShowDeleteModal(false)}
+          onConfirm={confirmDelete}
+          title={isArabic ? "حذف المريض" : "Delete Patient"}
+          message={
+            isArabic
+              ? "هل أنت متأكد أنك تريد حذف هذا المريض؟ سيؤدي ذلك إلى إزالة جميع بيانات المريض وسجلاته الطبية بشكل دائم."
+              : "Are you sure you want to delete this patient? This will permanently remove all patient data and medical records."
+          }
+          itemName={patientToDelete?.name || ""}
+        />
+      )}
     </DashboardLayout>
   );
 }
@@ -407,7 +421,8 @@ function ViewPatientModal({ patient, onClose }) {
                 {isArabic ? "العمر" : "Age"}
               </label>
               <p className="mt-1 text-sm text-foreground">
-                {calculateAge(patient.dateOfBirth)} {isArabic ? "سنوات" : "years"}
+                {calculateAge(patient.dateOfBirth)}{" "}
+                {isArabic ? "سنوات" : "years"}
               </p>
             </div>
             <div>
@@ -444,7 +459,9 @@ function ViewPatientModal({ patient, onClose }) {
             </div>
             <div>
               <label className="block text-sm font-medium text-muted-foreground">
-                {isArabic ? "جهة الاتصال في حالات الطوارئ" : "Emergency Contact"}
+                {isArabic
+                  ? "جهة الاتصال في حالات الطوارئ"
+                  : "Emergency Contact"}
               </label>
               <p className="mt-1 text-sm text-foreground">
                 {patient.emergencyContact.name} (
@@ -742,9 +759,7 @@ function EditPatientModal({ patient, onClose, onSave }) {
               rows={2}
               className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder={
-                isArabic
-                  ? "اكتب أي حساسية معروفة"
-                  : "List any known allergies"
+                isArabic ? "اكتب أي حساسية معروفة" : "List any known allergies"
               }
             />
           </div>
@@ -1015,9 +1030,7 @@ function CreatePatientModal({ onClose, onSave }) {
               rows={2}
               className="mt-1 block w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary bg-background text-foreground"
               placeholder={
-                isArabic
-                  ? "اكتب أي حساسية معروفة"
-                  : "List any known allergies"
+                isArabic ? "اكتب أي حساسية معروفة" : "List any known allergies"
               }
             />
           </div>
