@@ -402,14 +402,14 @@ function ViewInstitutionModal({ institution, onClose }) {
                 {institution.contact.email}
               </p>
             </div>
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-muted-foreground">
                 {isArabic ? "الدور" : "Role"}
               </label>
               <p className="mt-1 text-sm text-foreground capitalize">
                 {institution.role}
               </p>
-            </div>
+            </div> */}
           </div>
           <div>
             <label className="block text-sm font-medium text-muted-foreground">
@@ -643,7 +643,7 @@ function CreateInstitutionModal({ onClose, onSave }) {
     email: "",
     address: "",
     services: "",
-    role: "admin_institutions",
+    // role: "admin_institutions",
   });
 
   const handleSubmit = (e) => {
@@ -660,7 +660,7 @@ function CreateInstitutionModal({ onClose, onSave }) {
         .split(",")
         .map((s) => s.trim())
         .filter((s) => s),
-      role: formData.role,
+      // role: formData.role,
     };
     onSave(newInstitution);
   };
@@ -793,7 +793,7 @@ function CreateInstitutionModal({ onClose, onSave }) {
             </div>
           </div>
 
-          <div className="border-t pt-6">
+          {/* <div className="border-t pt-6">
             <h4 className="text-md font-medium text-foreground mb-3">
               {isArabic
                 ? "بيانات تسجيل دخول المؤسسة"
@@ -825,7 +825,7 @@ function CreateInstitutionModal({ onClose, onSave }) {
                 </select>
               </div>
             </div>
-          </div>
+          </div> */}
 
           <div className="flex justify-end space-x-3 mt-6">
             <button
